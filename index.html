@@ -75,13 +75,14 @@ h2{margin:6px 0 8px}
 <button id="start">Start</button></div></section>
 
 <section class="scr" id="menu"><div class="mp">👤 <b id="un"></b> <button class="g" id="swu" style="padding:5px 12px;font-size:13px;margin-left:8px">Almashtirish</button></div>
-<div class="stat" id="stats"></div><h2>Qaysi lug'atni yodlaymiz?</h2><div id="sets"></div>
+<div class="stat" id="annbox" style="display:none"></div><div class="stat" id="stats"></div><div class="stat" id="wod"></div><h2>Nimani o'rganamiz?</h2><div id="cats"></div>
 <div id="codebox"><div class="gh">Natijani boshqa qurilmaga ko'chirish</div>
 <div class="row"><button class="g" id="cg">Kod olish</button><button class="g" id="ci">Kod kiritish</button></div>
 <textarea id="cb" style="display:none;width:100%;height:90px;margin-top:10px;border-radius:12px;padding:10px;border:2px solid var(--c);background:var(--bg);color:var(--t);font:12px monospace"></textarea>
 <div class="row"><button id="cok" style="display:none"></button></div>
 <div class="mp" id="cm" style="margin-top:8px"></div></div></section>
 
+<section class="scr" id="lst"><h2 id="lt"></h2><div id="sets"></div><button class="g" id="lbk" style="width:100%;margin-top:6px">← Orqaga</button></section>
 <section class="scr" id="mode"><div style="display:flex;align-items:center;gap:14px;margin-bottom:12px"><div class="ring" id="ring"><span id="rt"></span></div><div><h2 id="mt" style="margin:0"></h2><div class="mp" id="mp" style="margin:4px 0 0"></div></div></div><div class="chips" id="chips"></div>
 <button class="set" id="mf"><span>Flashcard<small id="s1"></small></span>›</button>
 <button class="set" id="mq"><span>Viktorina<small id="s2"></small></span>›</button>
@@ -110,7 +111,8 @@ h2{margin:6px 0 8px}
 <section class="scr" id="mem"><div class="cnt" id="mc"></div><div class="mg3" id="mgd"></div><div class="row"><button id="mmx" style="display:none">Yana →</button><button class="g" id="mmb">Orqaga</button></div></section>
 <section class="scr" id="spd"><div class="cnt" id="sn"></div><div class="qw" id="sw"></div><div id="so"></div><div class="row"><button id="sx" style="display:none">Qayta boshlash</button><button class="g" id="sb">Orqaga</button></div></section>
 <section class="scr" id="lis"><div class="cnt" id="ln"></div><div class="qw" id="lw" style="font-size:3rem">🔊</div><div class="row"><button class="g" id="lrp">Qayta eshitish</button></div><div id="lo" style="margin-top:12px"></div><div class="mp" id="le" style="text-align:center;font-style:italic"></div><div class="row"><button id="lx" style="display:none">Keyingi →</button><button class="g" id="lb">Orqaga</button></div></section>
-<section class="scr" id="teach"><h2>Teacher panel</h2><div class="mp" id="tl2"></div><div id="tlist"></div><div class="row"><button class="g" id="trf">Refresh</button><button class="g" id="tbk2">Back</button></div></section>
+<section class="scr" id="teach"><h2>Teacher panel</h2><div class="mp" id="tl2"></div><div class="gh">Announcement to all students</div><textarea id="ann" maxlength="300" placeholder="Write a message students will see on their home screen" style="width:100%;height:70px;border-radius:12px;padding:10px;border:2px solid var(--c);background:var(--bg);color:var(--t);font:inherit"></textarea>
+<div class="row"><button id="annb">Send</button><button class="g" id="annc">Clear</button></div><div class="mp" id="annm" style="margin:6px 0 12px"></div><div class="gh">Students</div><div id="tlist"></div><div class="row"><button class="g" id="trf">Refresh</button><button class="g" id="tbk2">Back</button></div></section>
 <canvas id="cv"></canvas>
 <div id="toast"></div>
 <div class="ft">Created by FAZLIDDIN XISOMIDDINOV tg: <a href="https://t.me/xfs700" target="_blank" rel="noopener">@xfs700</a></div>
@@ -204,7 +206,7 @@ function fromObj(o){K={};SETS.forEach(function(s){var str=o[s.name];if(!str)retu
 function afterLogin(u){
  cu=u;var n=u.email.split('@')[0];uk=n;$('un').textContent=n;$('pu').textContent=n;$('ptc').style.display=isT()?'':'none';
  var loc={};try{loc=JSON.parse(lsg('ov_k_'+uk)||'{}')||{}}catch(e){}
- return fbDb.collection('users').doc(u.uid).get().then(function(d){var o=d.exists?d.data().p:null;if(o)fromObj(o);else K=loc;ldST(d.exists&&d.data().st);ldW(d.exists&&d.data().wr)}).catch(function(){K=loc;ldST();ldW()}).then(function(){goMenu()})}
+ return fbDb.collection('users').doc(u.uid).get().then(function(d){var o=d.exists?d.data().p:null;if(o)fromObj(o);else K=loc;ldST(d.exists&&d.data().st);ldW(d.exists&&d.data().wr)}).catch(function(){K=loc;ldST();ldW()}).then(function(){startPres();goMenu();loadAnn()})}
 function begin(){
  var n=uname($('uin').value),p=$('pw').value;
  if(!uok(n)){err('Username: 3-20 characters, letters, digits, _ . - only.');return}
@@ -222,13 +224,13 @@ if(FB_CONFIG&&typeof firebase!=='undefined'){try{
  $('start').onclick=begin;$('tl').onclick=function(){amode('login')};$('ts').onclick=function(){amode('signup')};
  $('pw').onkeydown=$('pw2').onkeydown=function(e){if(e.key==='Enter')begin()};
  fbAuth.onAuthStateChanged(function(u){$('start').disabled=false;
-  if(u){afterLogin(u)}else{cu=null;uk='';K={};WR={};$('ptc').style.display='none';$('hb').style.display='none';$('pn').classList.remove('on');$('uerr').textContent='';show('intro')}});
+  if(u){afterLogin(u)}else{clearInterval(hbT);cu=null;uk='';K={};WR={};$('ptc').style.display='none';$('hb').style.display='none';$('pn').classList.remove('on');$('uerr').textContent='';show('intro')}});
 }catch(e){acct=false}}
 if(!acct){$('pcp').style.display='none';$('plo').textContent='Switch user'}
 $('hb').onclick=function(){$('pn').classList.toggle('on')};
 document.addEventListener('click',function(e){if(!e.target.closest('.bar'))$('pn').classList.remove('on')});
 $('pcp').onclick=function(){var f=$('pcf');f.style.display=f.style.display==='none'?'block':'none'};
-$('plo').onclick=function(){$('pn').classList.remove('on');if(acct){push();fbAuth.signOut()}else{buildU();$('hb').style.display='none';show('intro')}};
+$('plo').onclick=function(){$('pn').classList.remove('on');if(acct){push();pres(false);fbAuth.signOut()}else{buildU();$('hb').style.display='none';show('intro')}};
 $('pcs').onclick=function(){var m=$('pcm'),a=$('pc0').value,b=$('pc1').value,c=$('pc2').value;m.className='msg no';
  if(b.length<6){m.textContent='New password must be at least 6 characters.';return}
  if(b!==c){m.textContent='Passwords do not match.';return}
@@ -250,23 +252,40 @@ $('cok').onclick=function(){
  if(cmode==='g'){$('cb').select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}
   if(!ok&&navigator.clipboard)navigator.clipboard.writeText($('cb').value).catch(function(){});$('cm').textContent="Nusxalandi (bo'lmasa, qo'lda belgilab nusxalang)."}
  else{var n=dec($('cb').value);if(n<0)$('cm').textContent="Kod noto'g'ri.";else{goMenu();$('cm').textContent="Yuklandi: "+n+" ta so'z yangilandi."}}};
+var catf='';
+function gwords(f){var r=[];SETS.forEach(function(x){if(f(x))r=r.concat(flat(x))});return r}
+function isD(x){return x.g.indexOf('Destination')===0}
+function isS(x){return !isD(x)}
+function drawWod(){var sp=gwords(isS).filter(function(w){return w[3]});var b=$('wod');if(!sp.length){b.style.display='none';return}
+ var w=sp[Math.floor(Date.now()/86400000)%sp.length];b.style.display='';b.innerHTML='';
+ var h=document.createElement('div');h.className='mp';h.style.margin='0 0 4px';h.textContent="💡 Kun so'zi";b.appendChild(h);
+ var m=document.createElement('div');m.style.cssText='font-size:1.3rem;font-weight:bold';m.textContent=w[0]+' — '+w[1];b.appendChild(m);
+ var e=document.createElement('div');e.className='fx ex';e.textContent='“'+w[3]+'”';b.appendChild(e);
+ if(TTS){var sp2=document.createElement('button');sp2.className='g';sp2.style.cssText='margin-top:8px;padding:6px 14px';sp2.textContent='🔊';sp2.onclick=function(){say(w[0])};b.appendChild(sp2)}}
+function cardBtn(name,sub,ws,onc){var b=document.createElement('button');b.className='set';var sp=document.createElement('span');sp.style.flex='1';sp.textContent=name;
+ var sm=document.createElement('small');sm.textContent=sub+' · '+ws.length+" ta so'z · "+pc(ws)+'%';sp.appendChild(sm);
+ var pb=document.createElement('div');pb.className='pb';pb.innerHTML='<i style="width:'+pc(ws)+'%"></i>';sp.appendChild(pb);b.appendChild(sp);b.appendChild(document.createTextNode(' ›'));b.onclick=onc;return b}
 function goMenu(){
- drawStats();$('hb').style.display='';$('pn').classList.remove('on');var h=$('sets');h.innerHTML='';
- var items=SETS.map(function(s){return{n:s.name,g:s.g,secs:s.sections,w:flat(s)}});
- items.push({n:"Hammasi aralash",g:"Hammasi",secs:[],w:ALL});
- var wl=ALL.filter(function(w){return WR[w[2]]});if(wl.length)items.unshift({n:"Xatolar ustida ishlash 🔁",g:"Takrorlash",secs:[],w:wl,ps:true});
+ drawStats();drawWod();$('hb').style.display='';$('pn').classList.remove('on');
+ var c=$('cats');c.innerHTML='';var wl=ALL.filter(function(w){return WR[w[2]]});
+ if(wl.length)c.appendChild(cardBtn('🔁 Xatolar ustida ishlash',"Xato qilgan so'zlaringiz",wl,function(){goList('rev')}));
+ c.appendChild(cardBtn('📘 Destination B1',SETS.filter(isD).length+' ta qism',gwords(isD),function(){goList('dest')}));
+ c.appendChild(cardBtn('🎤 IELTS Speaking',SETS.filter(isS).length+' ta mavzu',gwords(isS),function(){goList('spk')}));
+ show('menu')}
+function goList(k){catf=k;var h=$('sets');h.innerHTML='';var items;
+ if(k==='rev'){var wl=ALL.filter(function(w){return WR[w[2]]});if(!wl.length){goMenu();return}items=[{n:'Xatolar ustida ishlash 🔁',g:'Takrorlash',secs:[],w:wl,ps:true}]}
+ else{var lab=k==='dest'?'Destination B1':'IELTS Speaking';
+  items=SETS.filter(k==='dest'?isD:isS).map(function(x){return{n:x.name,g:x.g,secs:x.sections,w:flat(x)}});
+  var all=[];items.forEach(function(x){all=all.concat(x.w)});items.unshift({n:'Hammasi aralash',g:lab,secs:[],w:all})}
+ $('lt').textContent=k==='dest'?'Destination B1':k==='spk'?'IELTS Speaking':'Xatolar ustida ishlash';
  var lg='';
  items.forEach(function(it){
-  if(it.g!==lg){lg=it.g;var gw=[];items.forEach(function(x){if(x.g===lg&&lg!=='Hammasi')gw=gw.concat(x.w)});
+  if(it.g!==lg){lg=it.g;var gw=[];items.forEach(function(x){if(x.g===lg&&x.n!=='Hammasi aralash')gw=gw.concat(x.w)});
    var gh=document.createElement('div');gh.className='gh';gh.textContent=lg+(gw.length?' · '+pc(gw)+'%':'');h.appendChild(gh)}
-  var b=document.createElement('button');b.className='set';
-  var sp=document.createElement('span');sp.style.flex='1';sp.textContent=it.n;
-  var sm=document.createElement('small');sm.textContent=it.w.length+" ta so'z · "+pc(it.w)+"%";sp.appendChild(sm);
-  var pb=document.createElement('div');pb.className='pb';pb.innerHTML='<i style="width:'+pc(it.w)+'%"></i>';sp.appendChild(pb);
-  b.appendChild(sp);b.appendChild(document.createTextNode(' ›'));
-  b.onclick=function(){cur=it;chips();goMode()};h.appendChild(b)});
- show('menu');
-}
+  h.appendChild(cardBtn(it.n,'',it.w,function(){cur=it;chips();goMode()}));
+  var last=h.lastChild.firstChild.firstChild.nextSibling;last.textContent=last.textContent.replace(/^ · /,'')});
+ show('lst')}
+$('lbk').onclick=goMenu;
 function goMode(){$('mt').textContent=cur.n;var n=cur.w.length,f=0;cur.w.forEach(function(w){if(bits(K[w[2]]||0)===4)f++});
  $('mp').textContent=pc(cur.w)+"% yodlandi · 4 o'yinda ham topilgan: "+f+" / "+n;
  $('s1').textContent="Bosib tarjimani ko'ring · "+nk(cur.w,1)+"/"+n;$('s2').textContent="4 variantdan toping · "+nk(cur.w,2)+"/"+n;
@@ -280,7 +299,7 @@ function chips(){
   b.textContent=o.n+' ('+o.w.length+')';
   b.onclick=function(){pool=o.w;[].forEach.call(c.children,function(x){x.classList.remove('on')});b.classList.add('on')};c.appendChild(b)});
 }
-$('mb').onclick=goMenu;
+$('mb').onclick=function(){if(catf)goList(catf);else goMenu()};
 var armed=false;
 $('rs').onclick=function(){var b=this;
  if(!armed){armed=true;b.textContent='Aniqmi? Yana bosing';setTimeout(function(){armed=false;b.textContent='Natijani nolga tushirish'},3000);return}
@@ -394,17 +413,37 @@ $('lx').onclick=function(){li++;lq()};$('lrp').onclick=function(){if(lo[li])say(
 if(!TTS)$('mlis').style.display='none';
 /* teacher panel */
 function isT(){return acct&&TEACHERS.indexOf(uk)>-1}
+var LL=0,hbT=null;
+function pres(on){if(!(acct&&cu))return;fbDb.collection('presence').doc(cu.uid).set({u:uk,ll:LL,seen:Date.now(),on:on!==false}).catch(function(){})}
+function startPres(){LL=Date.now();pres();clearInterval(hbT);hbT=setInterval(function(){if(!document.hidden)pres()},60000)}
+document.addEventListener('visibilitychange',function(){if(!document.hidden)pres()});
+window.addEventListener('pagehide',function(){pres(false)});
+function loadAnn(){if(!acct)return;fbDb.collection('meta').doc('announce').get().then(function(d){var b=$('annbox'),v=d.exists?d.data():null;
+ if(!v||!v.t||lsg('ov_ann')===String(v.ts)){b.style.display='none';return}
+ b.style.display='';b.innerHTML='';var t=document.createElement('div');t.textContent='📢 '+v.t;b.appendChild(t);
+ var x=document.createElement('button');x.className='g';x.style.cssText='margin-top:8px;padding:5px 14px;font-size:13px';x.textContent='OK';x.onclick=function(){lss('ov_ann',String(v.ts));b.style.display='none'};b.appendChild(x)}).catch(function(){})}
+function sendAnn(t){fbDb.collection('meta').doc('announce').set({t:t,ts:Date.now()}).then(function(){$('annm').textContent=t?'Sent to all students.':'Announcement cleared.'}).catch(function(){$('annm').textContent='Failed. Check the Firestore rules.'})}
+$('annb').onclick=function(){var t=$('ann').value.trim();if(t)sendAnn(t)};
+$('annc').onclick=function(){$('ann').value='';sendAnn('')};
+function p2(n){return ('0'+n).slice(-2)}
+function fmtT(ts){if(!ts)return '—';var d=new Date(ts),t=ymd(d),hm=p2(d.getHours())+':'+p2(d.getMinutes());
+ if(t===today())return 'bugun '+hm;if(t===yest())return 'kecha '+hm;return p2(d.getDate())+'.'+p2(d.getMonth()+1)+' '+hm}
+function ago(ts){if(!ts)return '—';var m=Math.round((Date.now()-ts)/60000);if(m<1)return 'hozir';if(m<60)return m+' daq oldin';if(m<1440)return Math.round(m/60)+' soat oldin';return Math.round(m/1440)+' kun oldin'}
 function loadT(){show('teach');$('tl2').textContent='Loading...';$('tlist').innerHTML='';
- fbDb.collection('users').get().then(function(q){var L=[];
-  q.forEach(function(d){var v=d.data();if(!v||!v.u)return;var o=v.p||{},t=0,n=0;
-   SETS.forEach(function(s){var str=o[s.name]||'';flat(s).forEach(function(w,k){t+=bits(parseInt(str.charAt(k)||'0',16)||0);n++})});
-   var st=v.st||{};L.push({u:v.u,t:t,pc:Math.round(t*100/(4*n)),s:(st.last===today()||st.last===yest())?st.s:0,last:st.last||'-',td:st.d===today()?st.n:0})});
-  L.sort(function(a,b){return b.t-a.t});$('tl2').textContent=L.length+' students · sorted by points';
+ Promise.all([fbDb.collection('users').get(),fbDb.collection('presence').get().catch(function(){return null})]).then(function(rs){
+  var pm={};if(rs[1])rs[1].forEach(function(d){pm[d.id]=d.data()});var L=[],now=Date.now();
+  rs[0].forEach(function(d){var v=d.data();if(!v||!v.u)return;var o=v.p||{},t=0,n=0;
+   SETS.forEach(function(x){var str=o[x.name]||'';flat(x).forEach(function(w,k){t+=bits(parseInt(str.charAt(k)||'0',16)||0);n++})});
+   var st=v.st||{},pr=pm[d.id]||{};
+   L.push({u:v.u,t:t,pc:Math.round(t*100/(4*n)),s:(st.last===today()||st.last===yest())?st.s:0,td:st.d===today()?st.n:0,ll:pr.ll||0,seen:pr.seen||0,on:!!(pr.seen&&pr.on!==false&&now-pr.seen<150000)})});
+  L.sort(function(a,b){return (b.on-a.on)||(b.t-a.t)});
+  var no=L.filter(function(r){return r.on}).length;
+  $('tl2').textContent='🟢 '+no+' online · '+L.length+' students'+(rs[1]?'':' · (presence unavailable: update Firestore rules)');
   L.forEach(function(r,k){var l=LV[lvl(r.t)],d=document.createElement('div');d.className='set';d.style.display='block';
    var h=document.createElement('div');h.style.cssText='display:flex;justify-content:space-between';
-   var b1=document.createElement('b');b1.textContent='#'+(k+1)+' '+r.u;var b2=document.createElement('b');b2.textContent=r.pc+'%';h.appendChild(b1);h.appendChild(b2);d.appendChild(h);
+   var b1=document.createElement('b');b1.textContent=(r.on?'🟢 ':'⚪ ')+r.u;var b2=document.createElement('b');b2.textContent=r.pc+'%';h.appendChild(b1);h.appendChild(b2);d.appendChild(h);
    var pb=document.createElement('div');pb.className='pb';var i2=document.createElement('i');i2.style.width=r.pc+'%';pb.appendChild(i2);d.appendChild(pb);
-   var sm=document.createElement('small');sm.textContent=l[2]+' '+l[1]+' · '+r.t+' ball · 🔥 '+r.s+' · bugun: '+r.td+' · oxirgi: '+r.last;d.appendChild(sm);$('tlist').appendChild(d)})})
+   var sm=document.createElement('small');sm.textContent=(r.on?'Online':'Offline · '+ago(r.seen))+' · kirgan: '+fmtT(r.ll)+' · '+l[2]+' '+l[1]+' · '+r.t+' ball · 🔥 '+r.s+' · bugun: '+r.td;d.appendChild(sm);$('tlist').appendChild(d)})})
  .catch(function(){$('tl2').textContent='No access. Check that the Firestore rules include this teacher account.'})}
 $('ptc').onclick=function(){$('pn').classList.remove('on');loadT()};$('trf').onclick=loadT;$('tbk2').onclick=goMenu;
 /* sound + install */
