@@ -121,7 +121,7 @@ h2{margin:6px 0 8px}
 <div class="row"><button id="annb">Send</button><button class="g" id="annc">Clear</button></div><div class="mp" id="annm" style="margin:6px 0 12px"></div><div class="gh">Students</div><div id="tlist"></div><div class="row"><button class="g" id="trf">Refresh</button><button class="g" id="tbk2">Back</button></div></section>
 <canvas id="cv"></canvas>
 <div id="toast"></div>
-<div class="ft">Created by FAZLIDDIN XISOMIDDINOV tg: <a href="https://t.me/xfs700" target="_blank" rel="noopener">@xfs700</a></div>
+<div class="ft">Created by <a href="https://t.me/xfs700" target="_blank" rel="noopener">@xfs700</a></div>
 </div>
 <script>
 var FB_CONFIG={apiKey:"AIzaSyCzeHsIaJevIHmqEyQuEzgh1ZURNM0rMoE",authDomain:"ocean-vocab.firebaseapp.com",projectId:"ocean-vocab",storageBucket:"ocean-vocab.firebasestorage.app",messagingSenderId:"185300083165",appId:"1:185300083165:web:1c9b143e8e549b43085634"};
@@ -162,7 +162,7 @@ function tick(){var t=today();if(ST.d!==t){ST.d=t;ST.n=0}
 var WR={};
 function toW(){var o={};SETS.forEach(function(s){var str='',any=false;flat(s).forEach(function(w){var v=WR[w[2]]?1:0;if(v)any=true;str+=v});if(any)o[s.name]=str});return o}
 function ldW(r){WR={};if(r){SETS.forEach(function(s){var str=r[s.name];if(!str)return;flat(s).forEach(function(w,k){if(str.charAt(k)==='1')WR[w[2]]=1})})}else{try{WR=JSON.parse(lsg('ov_w_'+uk)||'{}')||{}}catch(e){WR={}}}}
-function wrong(w){WR[w[2]]=1;save()}
+function wrong(w){WR[w[2]]=1;var n=Object.keys(WR).length;if(n>(ST.maxw||0))ST.maxw=n;save()}
 var SND=lsg('ov_snd')!=='0',AC=null;
 function tone(f,t0,d,v){var o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(v,t0+0.006);g.gain.exponentialRampToValueAtTime(0.0001,t0+d);o.connect(g);g.connect(AC.destination);o.start(t0);o.stop(t0+d+0.05)}
 function beep(ok){if(!SND)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();var t=AC.currentTime;
@@ -173,11 +173,19 @@ function mark(w,b){var a=lvl(pts()),pb=cur?pc(cur.w):0;K[w[2]]=(K[w[2]]||0)|b;if
  if(cur&&pb<100&&pc(cur.w)===100){toast("Lug'at 100%! 🎉");confetti()}else if(c>a)toast('Yangi daraja: '+LV[c][1]+' '+LV[c][2]);
  chkB();save()}
 function okx(w){tick();delete WR[w[2]];beep(1);chkB();save()}
-var BD=[['first','🌱','Birinchi qadam','Birinchi ballni oling'],['s3','🔥','3 kun','3 kun ketma-ket mashq qiling'],['s7','🔥','7 kun','7 kun ketma-ket mashq qiling'],['s30','🏆','30 kun','30 kun ketma-ket mashq qiling'],['full25','⭐',"25 ta so'z","25 ta so'zni 4 o'yinda ham toping"],['full100','🌟',"100 ta so'z","100 ta so'zni 4 o'yinda ham toping"],['set1','🎯','Birinchi 100%',"Bitta lug'atni 100% qiling"],['set5','🏅',"5 ta lug'at 100%","5 ta lug'atni 100% qiling"],['goal7','💪','Maqsad ×7','Kunlik maqsadni 7 marta bajaring'],['qperf','🧠','Xatosiz viktorina','Viktorinada 10+ savolga xatosiz javob bering'],['spd15','⚡','Tezkor 15',"Tezkor o'yinda 15 ball to'plang"],['mem8','🃏','Xotira ustasi',"Xotira o'yinini 8 urinishda yeching"],['ex80','📝','Imtihon 80%',"Imtihondan 80% yoki ko'proq oling"]];
+var BD=[['first','🌱','Birinchi qadam','Birinchi ballni oling'],['s3','🔥','3 kun','3 kun ketma-ket mashq qiling'],['s7','🔥','7 kun','7 kun ketma-ket mashq qiling'],['s30','🏆','30 kun','30 kun ketma-ket mashq qiling'],['full25','⭐',"25 ta so'z","25 ta so'zni 4 o'yinda ham toping"],['full100','🌟',"100 ta so'z","100 ta so'zni 4 o'yinda ham toping"],['set1','🎯','Birinchi 100%',"Bitta lug'atni 100% qiling"],['set5','🏅',"5 ta lug'at 100%","5 ta lug'atni 100% qiling"],['goal7','💪','Maqsad ×7','Kunlik maqsadni 7 marta bajaring'],['qperf','🧠','Xatosiz viktorina','Viktorinada 10+ savolga xatosiz javob bering'],['spd15','⚡','Tezkor 15',"Tezkor o'yinda 15 ball to'plang"],['mem8','🃏','Xotira ustasi',"Xotira o'yinini 8 urinishda yeching"],['ex80','📝','Imtihon 80%',"Imtihondan 80% yoki ko'proq oling"],
+['s14','🔥','14 kun','14 kun ketma-ket mashq qiling'],['p100','💯','100 ball','100 ball to\'plang'],['full250','🌠',"250 ta so'z","250 ta so'zni 4 o'yinda ham toping"],['set10','🥇',"10 ta lug'at 100%","10 ta lug'atni 100% qiling"],
+['catdone','🎓',"Bo'lim 100%","Speaking, Academic, Phrasal yoki Idioms bo'limini to'liq 100% qiling"],['allgames','🎮',"Hamma o'yinlar","8 ta o'yin va imtihonning hammasini sinab ko'ring"],['type50','⌨️','Yozuvchi',"Yozish o'yinida 50 ta to'g'ri javob bering"],
+['spd25','🚀','Tezkor 25',"Tezkor o'yinda 25 ball to'plang"],['ex100','🏆','Imtihon 100%',"Imtihondan 100% oling (20+ savol)"],['clean','🧹','Xatolar tozalandi',"10+ xatoni to'liq tuzating (ro'yxat bo'shasin)"],['owl','🦉','Tungi boyqush',"Soat 22:00 dan keyin mashq qiling"],['face','🖼️','Profil rasmi',"Profil rasmi yoki emoji tanlang"]];
 function award(id){ST.b=ST.b||{};if(ST.b[id])return;ST.b[id]=Date.now();var d=BD.filter(function(x){return x[0]===id})[0];toast('🏅 Yangi yutuq: '+d[1]+' '+d[2]);confetti();save()}
 function chkB(){var p=pts();if(p>=1)award('first');var b=ST.best||0;if(b>=3)award('s3');if(b>=7)award('s7');if(b>=30)award('s30');
  var f=0;ALL.forEach(function(w){if(bits(K[w[2]]||0)===4)f++});if(f>=25)award('full25');if(f>=100)award('full100');
- var sc=0;SETS.forEach(function(x){if(pc(flat(x))===100)sc++});if(sc>=1)award('set1');if(sc>=5)award('set5');if((ST.gd||0)>=7)award('goal7')}
+ var sc=0;SETS.forEach(function(x){if(pc(flat(x))===100)sc++});if(sc>=1)award('set1');if(sc>=5)award('set5');if((ST.gd||0)>=7)award('goal7');
+ if(b>=14)award('s14');if(p>=100)award('p100');if(f>=250)award('full250');if(sc>=10)award('set10');
+ var cd=false;CATS.forEach(function(ct){if(ct.k==='dest')return;var ws=gwords(ct.f);if(ws.length&&pc(ws)===100)cd=true});if(cd)award('catdone');
+ if(ST.gp&&Object.keys(ST.gp).length>=8)award('allgames');
+ if((ST.maxw||0)>=10&&Object.keys(WR).length===0)award('clean');
+ var h=new Date().getHours();if(h>=22||h<4)award('owl')}
 function goBadges(){var l=$('bdl');l.innerHTML='';var n=0;
  BD.forEach(function(x){var on=ST.b&&ST.b[x[0]];if(on)n++;var d=document.createElement('div');d.className='set';d.style.opacity=on?1:.5;d.style.cursor='default';
   var e=document.createElement('span');e.style.cssText='font-size:1.8rem;margin-right:12px';e.textContent=on?x[1]:'🔒';
@@ -201,7 +209,9 @@ function pri(ws,b){return sh(ws.filter(function(w){return !((K[w[2]]||0)&b)})).c
 var ALL=[];SETS.forEach(function(s){s.sections.forEach(function(x){x.w.forEach(function(w){w[2]=s.name+'::'+w[0]});ALL=ALL.concat(x.w)})});
 function flat(s){var r=[];s.sections.forEach(function(x){r=r.concat(x.w)});return r}
 var cur=null,pool=[],i=0,flip=false,order=[],score=0;
-function show(id){document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on')});$(id).classList.add('on');window.scrollTo(0,0)}
+var GM={flash:1,quiz:1,match:1,typ:1,exm:1,mem:1,spd:1,lis:1};
+function show(id){document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on')});$(id).classList.add('on');window.scrollTo(0,0);
+ if(GM[id]&&uk){ST.gp=ST.gp||{};if(!ST.gp[id]){ST.gp[id]=1;chkB();save()}}}
 $('quote').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
 function localBegin(){if(!login($('uin').value)){$('uerr').textContent='Please type your name first.';return}goMenu()}
 $('start').onclick=localBegin;
@@ -402,7 +412,7 @@ function check(){
  var v=tnorm($('ti').value);if(!v)return;
  var ok=[tw].concat(ALL.filter(function(x){return x[1]===tw[1]})).some(function(x){return talts(x[0]).indexOf(v)>-1});
  tst=1;$('ti').disabled=true;$('th2').style.display='none';$('tc').textContent='Keyingi →';$('te').textContent=extra(tw);say(tw[0]);
- if(ok){score++;mark(tw,8);beep(1);$('tf').textContent="To'g'ri! ✓";$('tf').className='msg ok'}
+ if(ok){score++;mark(tw,8);beep(1);ST.ty=(ST.ty||0)+1;if(ST.ty>=50)award('type50');$('tf').textContent="To'g'ri! ✓";$('tf').className='msg ok'}
  else{wrong(tw);beep(0);$('tf').textContent="Noto'g'ri. To'g'risi: "+tw[0];$('tf').className='msg no'}
 }
 $('tc').onclick=function(){if(tst===2)startT();else if(tst===1){i++;task()}else check()};
@@ -429,7 +439,7 @@ function spdHead(){$('sn').textContent='⏱ '+sLeft+' s · Ball: '+sScore}
 function spdQ(){spdHead();var w=pool[Math.floor(Math.random()*pool.length)];$('sw').textContent=w[0];var o=$('so');o.innerHTML='';
  sh(sh(ALL.filter(function(x){return x[1]!==w[1]})).slice(0,3).concat([w])).forEach(function(x){var b=document.createElement('button');b.className='opt';b.textContent=x[1];
   b.onclick=function(){if(sLeft<=0)return;if(x===w){sScore++;okx(w)}else{wrong(w);beep(0)}spdQ()};o.appendChild(b)})}
-function spdEnd(){$('sn').textContent='Vaqt tugadi!';$('sw').innerHTML='<div class="score">'+sScore+'</div>';$('so').innerHTML='';$('sx').style.display='block';if(sScore>=10)confetti();if(sScore>=15)award('spd15')}
+function spdEnd(){$('sn').textContent='Vaqt tugadi!';$('sw').innerHTML='<div class="score">'+sScore+'</div>';$('so').innerHTML='';$('sx').style.display='block';if(sScore>=10)confetti();if(sScore>=15)award('spd15');if(sScore>=25)award('spd25')}
 $('sx').onclick=startSpd;$('sb').onclick=function(){clearInterval(sT);goMode()};
 var lo=[],li=0,lsc=0;
 $('mlis').onclick=function(){lo=sh(pool).slice(0,10);li=0;lsc=0;show('lis');lq()};
@@ -456,13 +466,13 @@ $('enx').onclick=function(){
  var q=ex.q[ex.i],ok=false;
  if(q.t==='c'){if(!ex.sel){toast('Javobni tanlang');return}ok=ex.sel[1]===q.w[1]}
  else{var v=tnorm($('ei').value);if(!v){toast('Javobni yozing');return}ok=[q.w].concat(ALL.filter(function(x){return x[1]===q.w[1]})).some(function(x){return talts(x[0]).indexOf(v)>-1})}
- if(ok)ex.sc++;else{ex.miss.push(q.w);WR[q.w[2]]=1}
+ if(ok)ex.sc++;else{ex.miss.push(q.w);wrong(q.w)}
  if(ex.i<ex.q.length-1){ex.i++;exq()}else exEnd()};
 $('ei').onkeydown=function(e){if(e.key==='Enter')$('enx').click()};
 $('ebk').onclick=goMode;
 function exEnd(){var n=ex.q.length,pct=Math.round(ex.sc*100/n);ex.done=true;
  ST.ex=ST.ex||[];ST.ex.unshift({ts:Date.now(),n:cur.n,sc:ex.sc,tot:n});ST.ex=ST.ex.slice(0,20);
- tick();if(pct>=80&&n>=20)award('ex80');save();beep(pct>=60);if(pct>=80)confetti();
+ tick();if(pct>=80&&n>=20)award('ex80');if(pct===100&&n>=20)award('ex100');save();beep(pct>=60);if(pct>=80)confetti();
  var o=$('eo');o.innerHTML='';$('ei').style.display='none';$('en').textContent='Imtihon tugadi';$('eq').innerHTML='<div class="score">'+ex.sc+' / '+n+' · '+pct+'%</div>';
  ex.miss.slice(0,15).forEach(function(w){var d=document.createElement('div');d.className='mp';d.style.margin='4px 0';d.textContent='✗ '+w[0]+' — '+w[1];o.appendChild(d)});
  $('enx').textContent='Orqaga'}
@@ -535,12 +545,12 @@ function avEl(a,sz){var e;
 function ldAv(r){AV=r||lsg('ov_av_'+uk)||''}
 var EMO=['🐬','🐳','🐙','🦈','🐠','🐢','🦀','🦑','🐡','🦭','🐚','🌊'];
 function buildEmo(){var g=$('avg');g.innerHTML='';EMO.concat(['✕']).forEach(function(m){var b=document.createElement('button');b.className='g';b.style.cssText='padding:6px 10px;font-size:1.2rem';b.textContent=m;
- b.onclick=function(){AV=m==='✕'?'':'e:'+m;setAv();save();g.style.display='none'};g.appendChild(b)})}
+ b.onclick=function(){AV=m==='✕'?'':'e:'+m;setAv();if(AV)award('face');save();g.style.display='none'};g.appendChild(b)})}
 $('ave').onclick=function(){var g=$('avg');buildEmo();g.style.display=g.style.display==='flex'?'none':'flex'};
 $('avu').onclick=function(){$('avf').click()};
 $('avf').onchange=function(){var f=this.files[0];this.value='';if(!f)return;var r=new FileReader();
  r.onload=function(){var im=new Image();im.onload=function(){var S=128,c=document.createElement('canvas');c.width=c.height=S;var x=c.getContext('2d'),m=Math.min(im.width,im.height);
-  x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);AV=c.toDataURL('image/jpeg',0.8);setAv();save();toast('Rasm saqlandi')};
+  x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);AV=c.toDataURL('image/jpeg',0.8);setAv();award('face');save();toast('Rasm saqlandi')};
   im.onerror=function(){toast('Rasm ochilmadi')};im.src=r.result};r.readAsDataURL(f)};
 /* back buttons at the top */
 [['lst','lbk'],['mode','mb'],['flash','fb'],['quiz','qb'],['match','mbk'],['typ','tbk'],['exm','ebk'],['mem','mmb'],['spd','sb'],['lis','lb'],['bdg','bbk'],['tdet','tdbk'],['teach','tbk2']].forEach(function(q){
