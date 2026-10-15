@@ -85,7 +85,7 @@ h2{margin:6px 0 8px}
 <div class="mp" id="cm" style="margin-top:8px"></div></div></section>
 
 <section class="scr" id="lst"><h2 id="lt"></h2><div id="sets"></div><button class="g" id="lbk" style="width:100%;margin-top:6px">← Orqaga</button></section>
-<section class="scr" id="mode"><div style="display:flex;align-items:center;gap:14px;margin-bottom:12px"><div class="ring" id="ring"><span id="rt"></span></div><div><h2 id="mt" style="margin:0"></h2><div class="mp" id="mp" style="margin:4px 0 0"></div></div></div><div class="chips" id="chips"></div>
+<section class="scr" id="mode"><div style="display:flex;align-items:center;gap:14px;margin-bottom:12px"><div class="ring" id="ring"><span id="rt"></span></div><div><h2 id="mt" style="margin:0"></h2><div class="mp" id="mp" style="margin:4px 0 0"></div></div></div><button class="set" id="amr" style="display:none;background:var(--a);color:var(--ab);justify-content:center;font-weight:bold"></button><div class="chips" id="chips"></div>
 <button class="set" id="mf"><span>Flashcard<small id="s1"></small></span>›</button>
 <button class="set" id="mq"><span>Viktorina<small id="s2"></small></span>›</button>
 <button class="set" id="mm"><span>Moslashtirish<small id="s3"></small></span>›</button>
@@ -114,8 +114,8 @@ h2{margin:6px 0 8px}
 <section class="scr" id="mem"><div class="cnt" id="mc"></div><div class="mg3" id="mgd"></div><div class="row"><button id="mmx" style="display:none">Yana →</button><button class="g" id="mmb">Orqaga</button></div></section>
 <section class="scr" id="spd"><div class="cnt" id="sn"></div><div class="qw" id="sw"></div><div id="so"></div><div class="row"><button id="sx" style="display:none">Qayta boshlash</button><button class="g" id="sb">Orqaga</button></div></section>
 <section class="scr" id="lis"><div class="cnt" id="ln"></div><div class="qw" id="lw" style="font-size:3rem">🔊</div><div class="row"><button class="g" id="lrp">Qayta eshitish</button></div><div id="lo" style="margin-top:12px"></div><div class="mp" id="le" style="text-align:center;font-style:italic"></div><div class="row"><button id="lx" style="display:none">Keyingi →</button><button class="g" id="lb">Orqaga</button></div></section>
-<section class="scr" id="addw"><h2>➕ New vocabulary</h2>
-<div class="mp">Reading yoki boshqa joydan o'rgangan inglizcha so'zlaringizni yozing: 5 tadan 30 tagacha, har birini yangi qatordan. Tarjima va misollar avtomatik topiladi, keyin tekshirib saqlaysiz.</div>
+<section class="scr" id="addw"><h2 id="ad_h">➕ New vocabulary</h2>
+<div class="mp" id="ad_i">Reading yoki boshqa joydan o'rgangan inglizcha so'zlaringizni yozing: 5 tadan 30 tagacha, har birini yangi qatordan. Tarjima va misollar avtomatik topiladi, keyin tekshirib saqlaysiz.</div>
 <input class="pi" id="ad_n" maxlength="30" placeholder="Ro'yxat nomi (ixtiyoriy), masalan: Reading 12" autocomplete="off">
 <textarea id="ad_t" placeholder="journey&#10;improve&#10;take part in&#10;..." style="width:100%;height:150px;border-radius:12px;padding:10px;border:2px solid var(--c);background:var(--bg);color:var(--t);font:inherit"></textarea>
 <div class="row"><button id="ad_go">Tarjima va misollarni topish</button></div>
@@ -133,7 +133,8 @@ h2{margin:6px 0 8px}
 <script>
 var FB_CONFIG={apiKey:"AIzaSyCzeHsIaJevIHmqEyQuEzgh1ZURNM0rMoE",authDomain:"ocean-vocab.firebaseapp.com",projectId:"ocean-vocab",storageBucket:"ocean-vocab.firebasestorage.app",messagingSenderId:"185300083165",appId:"1:185300083165:web:1c9b143e8e549b43085634"};
 var GEM_MODEL='gemini-2.5-flash-lite'; /* change if Google retires this model */
-var RECAPTCHA_KEY='6LcHQu4tAAAAALXOc-jJrmaR7141DrLLG-2gkWWY'; /* App Check reCAPTCHA v3 SITE key: needed to use Gemini */
+var RECAPTCHA_ENT=true; /* true = Fraud Defense (reCAPTCHA Enterprise) key, false = classic reCAPTCHA v3 key */
+var RECAPTCHA_KEY='6Lf6Y-8tAAAAADcXGHZBO1nKL1G7XIaDT_pvqvK1'; /* paste your Fraud Defense site key (Key ID) here to turn Gemini on */
 var AI_CFG={apiKey:"AIzaSyCzeHsIaJevIHmqEyQuEzgh1ZURNM0rMoE",authDomain:"ocean-vocab.firebaseapp.com",projectId:"ocean-vocab",storageBucket:"ocean-vocab.firebasestorage.app",messagingSenderId:"185300083165",appId:"1:185300083165:web:40a608df4764d4a5085634"};
 var MM_EMAIL=''; /* optional: your email raises the free translation limit */
 var TEACHERS=['xfs700']; /* usernames that can open the Teacher panel */
@@ -345,7 +346,7 @@ function goMode(){$('mt').textContent=cur.n;var n=cur.w.length,f=0;cur.w.forEach
  $('mp').textContent=pc(cur.w)+"% yodlandi · 4 o'yinda ham topilgan: "+f+" / "+n;
  $('s1').textContent="Bosib tarjimani ko'ring · "+nk(cur.w,1)+"/"+n;$('s2').textContent="4 variantdan toping · "+nk(cur.w,2)+"/"+n;
  $('s3').textContent="Juftlarni toping · "+nk(cur.w,4)+"/"+n;$('s4').textContent="Inglizchasini yozing · "+nk(cur.w,8)+"/"+n;
- var pp=pc(cur.w);$('ring').style.background='conic-gradient(var(--a) '+pp*3.6+'deg,var(--c) 0)';$('rt').textContent=pp+'%';$('rs').style.display=cur.ps?'none':'';$('dl').style.display=cur.mid?'':'none';show('mode')}
+ var pp=pc(cur.w);$('ring').style.background='conic-gradient(var(--a) '+pp*3.6+'deg,var(--c) 0)';$('rt').textContent=pp+'%';$('rs').style.display=cur.ps?'none':'';$('dl').style.display=cur.mid?'':'none';var am=$('amr');if(cur.mid&&cur.w.length<30){am.style.display='';am.textContent='➕ Add more ('+cur.w.length+'/30)'}else am.style.display='none';show('mode')}
 function chips(){
  var c=$('chips');c.innerHTML='';var opts=[{n:"Hammasi",w:cur.w}];
  if(cur.secs.length>1)opts=opts.concat(cur.secs);
@@ -597,7 +598,7 @@ function gemInit(){if(gemP)return gemP;
  try{gemP=Promise.all([import(B+'firebase-app.js'),import(B+'firebase-app-check.js'),import(B+'firebase-ai.js')])}catch(e){return Promise.reject(e)}
  gemP=gemP.then(function(m){
   var app=m[0].initializeApp(AI_CFG,'ai');
-  m[1].initializeAppCheck(app,{provider:new m[1].ReCaptchaV3Provider(RECAPTCHA_KEY),isTokenAutoRefreshEnabled:true});
+  m[1].initializeAppCheck(app,{provider:(RECAPTCHA_ENT?new m[1].ReCaptchaEnterpriseProvider(RECAPTCHA_KEY):new m[1].ReCaptchaV3Provider(RECAPTCHA_KEY)),isTokenAutoRefreshEnabled:true});
   var ai=m[2].getAI(app,{backend:new m[2].GoogleAIBackend()});
   return m[2].getGenerativeModel(ai,{model:GEM_MODEL,generationConfig:{responseMimeType:'application/json'}})});
  gemP.catch(function(){gemP=null});return gemP}
@@ -614,12 +615,20 @@ function gemFill(ws){
    w.c=us;if(!w.u)w.u=us[0]||'';w.x=typeof o.x==='string'?o.x.trim():'';w.d=typeof o.d==='string'?o.d.trim():''});
   if(!any)throw new Error('empty');return true})}
 function amsg(t,bad){var m=$('ad_m');m.textContent=t;m.className='msg'+(bad?' no':'')}
-function goAdd(){$('ad_l').innerHTML='';$('ad_sv').style.display='none';amsg('');$('ad_go').disabled=false;show('addw')}
+var addTarget=null,AI_TXT="Reading yoki boshqa joydan o'rgangan inglizcha so'zlaringizni yozing: 5 tadan 30 tagacha, har birini yangi qatordan. Tarjima va misollar avtomatik topiladi, keyin tekshirib saqlaysiz.";
+function goAdd(){addTarget=null;$('ad_h').textContent='➕ New vocabulary';$('ad_i').textContent=AI_TXT;$('ad_n').style.display='';$('ad_t').value='';$('ad_l').innerHTML='';$('ad_sv').style.display='none';amsg('');$('ad_go').disabled=false;show('addw')}
+function goAddMore(){addTarget=cur.mid;var n=cur.w.length;$('ad_h').textContent='➕ Add more';$('ad_i').textContent="Ro'yxatda hozir "+n+" ta so'z bor. Yana ko'pi bilan "+(30-n)+" ta so'z qo'shishingiz mumkin (har birini yangi qatordan). Takroriy so'zlar olib tashlanadi.";$('ad_n').style.display='none';$('ad_t').value='';$('ad_l').innerHTML='';$('ad_sv').style.display='none';amsg('');$('ad_go').disabled=false;show('addw')}
+$('amr').onclick=goAddMore;
+$('adb').onclick=function(){if(addTarget){addTarget=null;goMode()}else goList('my')};
 $('ad_go').onclick=function(){
  var raw=$('ad_t').value.split('\n').map(function(l){return l.trim()}).filter(Boolean),seen={},ws=[];
  raw.forEach(function(l){var m=l.split(/\s+[-=:–]\s+/),e=m[0].trim(),u=m.length>1?m.slice(1).join(' - ').trim():'',k=e.toLowerCase();if(e&&!seen[k]){seen[k]=1;ws.push({e:e,u:u,c:[],x:'',d:''})}});
- if(ws.length<5){amsg("Kamida 5 ta so'z yozing.",1);return}
- if(ws.length>30){amsg("Ko'pi bilan 30 ta so'z (hozir "+ws.length+" ta).",1);return}
+ var L0=addTarget?ML.filter(function(l){return l.id===addTarget})[0]:null,have=L0?L0.w.length:0,cap=30-have;
+ if(L0){var exs={};L0.w.forEach(function(o){exs[o.e.toLowerCase()]=1});ws=ws.filter(function(w){return !exs[w.e.toLowerCase()]});
+  if(ws.length<1){amsg("Yangi so'z topilmadi (takroriy so'zlar olib tashlandi).",1);return}
+  if(ws.length>cap){amsg("Yana ko'pi bilan "+cap+" ta so'z qo'sha olasiz (hozir "+ws.length+" ta yozdingiz).",1);return}}
+ else{if(ws.length<5){amsg("Kamida 5 ta so'z yozing.",1);return}
+  if(ws.length>30){amsg("Ko'pi bilan 30 ta so'z (hozir "+ws.length+" ta).",1);return}}
  var btn=$('ad_go');btn.disabled=true;$('ad_l').innerHTML='';$('ad_sv').style.display='none';
  var idx=0,fin=0,fail=0,quota=false;
  function one(w){var a=w.u?Promise.resolve([w.u]):trWord(w.e).catch(function(e){fail++;if(e&&e.message==='quota')quota=true;return[]});
@@ -643,6 +652,11 @@ $('ad_go').onclick=function(){
 $('ad_sv').onclick=function(){var rows=[].slice.call($('ad_l').children),ws=[],bad=0;
  rows.forEach(function(r){var u=r.u.value.trim();if(!u){bad++;return}ws.push({e:r.e,u:u,x:r.x.value.trim(),d:r.d||''})});
  if(bad){amsg(bad+" ta so'zga tarjima yozing yoki ✕ bilan olib tashlang.",1);return}
+ if(addTarget){var L=ML.filter(function(l){return l.id===addTarget})[0];if(!L){addTarget=null;goList('my');return}
+  if(ws.length<1){amsg("Kamida 1 ta so'z bo'lishi kerak.",1);return}
+  if(L.w.length+ws.length>30){amsg("Ro'yxatda jami 30 tadan ko'p so'z bo'lmasligi kerak.",1);return}
+  L.w=L.w.concat(ws);var lid=L.id;setML(ML);save();toast(ws.length+" ta so'z qo'shildi");$('ad_t').value='';
+  var st=SETS.filter(function(x){return x.mid===lid})[0];cur={n:st.name,g:st.g,secs:st.sections,w:flat(st),mid:st.mid};catf='my';addTarget=null;chips();goMode();return}
  if(ws.length<5){amsg("Kamida 5 ta so'z bo'lishi kerak.",1);return}
  var d=new Date(),nm='✍️ '+($('ad_n').value.trim()||("Yangi lug'at "+p2(d.getDate())+'.'+p2(d.getMonth()+1))),b=nm,k=2;
  while(SETS.some(function(x){return x.name===nm}))nm=b+' ('+(k++)+')';
