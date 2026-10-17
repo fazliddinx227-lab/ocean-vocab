@@ -67,14 +67,16 @@ h2{margin:6px 0 8px}
 <button class="g" id="pin" style="width:100%;margin-bottom:8px">Add to home screen</button>
 <button class="g" id="plo" style="width:100%">Log out</button></div></div>
 
-<section class="scr on" id="intro"><div class="hero"><small>VOCABULARY</small><h1 id="quote"></h1><div class="wave"></div>
-<div class="tabs" id="tabs" style="display:none"><button class="chip on" id="tl">Log in</button><button class="chip" id="ts">Sign up</button></div>
+<section class="scr on" id="intro"><div class="hero"><form id="lf" autocomplete="on" onsubmit="return false"><small>VOCABULARY</small><h1 id="quote"></h1><div class="wave"></div>
+<div class="tabs" id="tabs" style="display:none"><button type="button" class="chip on" id="tl">Log in</button><button type="button" class="chip" id="ts">Sign up</button></div>
 <input id="uin" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Your name">
 <input id="pw" type="password" autocomplete="current-password" placeholder="Password" style="display:none;margin-top:10px">
 <input id="pw2" type="password" autocomplete="new-password" placeholder="Repeat password" style="display:none;margin-top:10px">
+<label class="mp" id="spwl" style="display:none;margin:8px 0 0;cursor:pointer"><input type="checkbox" id="spw"> Show password</label>
+<div class="mp" id="iab" style="display:none;color:var(--no);margin:10px 0 0">You opened this site inside another app (Telegram, Instagram...). Your login may not be remembered. Open the link in Safari or Chrome (⋯ → "Open in browser") or add the site to your home screen.</div>
 <div class="chips" id="uch" style="justify-content:center;margin:12px 0 0"></div>
 <div class="mp" id="uerr" style="margin:8px 0 16px">Type your name: your progress is saved under it.</div>
-<button id="start">Start</button></div></section>
+<button id="start" type="submit">Start</button></form></div></section>
 
 <section class="scr" id="menu"><div class="mp"><span id="avm"></span> <b id="un"></b> <button class="g" id="swu" style="padding:5px 12px;font-size:13px;margin-left:8px">Almashtirish</button></div>
 <div class="stat" id="annbox" style="display:none"></div><div class="stat" id="stats"></div><div class="stat" id="wod"></div><h2>Nimani o'rganamiz?</h2><div id="cats"></div>
@@ -228,9 +230,9 @@ function show(id){document.querySelectorAll('.scr').forEach(function(s){s.classL
 $('quote').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
 function localBegin(){if(!login($('uin').value)){$('uerr').textContent='Please type your name first.';return}goMenu()}
 $('start').onclick=localBegin;
-$('uin').onkeydown=function(e){if(e.key==='Enter')$('start').onclick()};
+$('uin').onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();$('start').onclick()}};
 function buildU(){if(acct)return;var l=lsg('ov_last');if(l)$('uin').value=l;var c=$('uch');c.innerHTML='';
- users().forEach(function(n){var b=document.createElement('button');b.className='chip';b.textContent=n;b.onclick=function(){$('uin').value=n;begin()};c.appendChild(b)})}
+ users().forEach(function(n){var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=n;b.onclick=function(){$('uin').value=n;$('start').onclick()};c.appendChild(b)})}
 /* accounts (Firebase) */
 function uname(n){return n.trim().toLowerCase()}
 function uok(n){return /^[a-z0-9_.-]{3,20}$/.test(n)}
@@ -246,28 +248,31 @@ function err(t){$('uerr').textContent=t}
 var amd='login';
 function amode(m){amd=m;$('tl').classList.toggle('on',m==='login');$('ts').classList.toggle('on',m==='signup');
  $('pw2').style.display=m==='signup'?'':'none';$('start').textContent=m==='signup'?'Create account':'Log in';
- $('pw').autocomplete=m==='signup'?'new-password':'current-password';err('')}
+ $('pw').autocomplete=m==='signup'?'new-password':'current-password';err(m==='signup'?'Remember your password! If you forget it, your teacher can restore your progress.':'')}
 function fromObj(o){K={};SETS.forEach(function(s){var str=o[s.name];if(!str)return;flat(s).forEach(function(w,k){var v=parseInt(str.charAt(k)||'0',16)||0;if(v)K[w[2]]=v})})}
 function afterLogin(u){
  cu=u;var n=u.email.split('@')[0];uk=n;$('un').textContent=n;$('pu').textContent=n;$('ptc').style.display=isT()?'':'none';
  var loc={};try{loc=JSON.parse(lsg('ov_k_'+uk)||'{}')||{}}catch(e){}
  return fbDb.collection('users').doc(u.uid).get().then(function(d){ldML(d.exists&&d.data().ml);var o=d.exists?d.data().p:null;if(o)fromObj(o);else K=loc;ldST(d.exists&&d.data().st);ldW(d.exists&&d.data().wr);ldAv(d.exists&&d.data().av)}).catch(function(){K=loc;ldML();ldST();ldW();ldAv()}).then(function(){startPres();goMenu();loadAnn()})}
 function begin(){
+ if($('start').disabled)return;
  var n=uname($('uin').value),p=$('pw').value;
  if(!uok(n)){err('Username: 3-20 characters, letters, digits, _ . - only.');return}
  if(p.length<6){err('Password must be at least 6 characters.');return}
  if(amd==='signup'&&p!==$('pw2').value){err('Passwords do not match.');return}
  $('start').disabled=true;err('Please wait...');
  var pr=amd==='signup'?fbAuth.createUserWithEmailAndPassword(uem(n),p):fbAuth.signInWithEmailAndPassword(uem(n),p);
- pr.then(function(c){$('pw').value='';$('pw2').value='';err('');if(amd==='signup')return fbDb.collection('users').doc(c.user.uid).set({u:n,p:{}}).catch(function(){})})
+ pr.then(function(c){lss('ov_lastuser',n);try{if(window.PasswordCredential&&navigator.credentials)navigator.credentials.store(new PasswordCredential({id:n,password:p,name:n}))}catch(e){}$('pw').value='';$('pw2').value='';err('');if(amd==='signup')return fbDb.collection('users').doc(c.user.uid).set({u:n,p:{}}).catch(function(){})})
   .catch(function(e){err(aerr(e))}).then(function(){$('start').disabled=false})}
 if(FB_CONFIG&&typeof firebase!=='undefined'){try{
- firebase.initializeApp(FB_CONFIG);fbAuth=firebase.auth();fbDb=firebase.firestore();acct=true;
+ firebase.initializeApp(FB_CONFIG);fbAuth=firebase.auth();fbDb=firebase.firestore();acct=true;try{fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)}catch(e){}
+ var ua=navigator.userAgent||'';if(/Telegram|Instagram|FBAN|FBAV|Line\/|; wv\)/i.test(ua)||(/iPhone|iPad/.test(ua)&&!/Safari|CriOS|FxiOS|EdgiOS/.test(ua)))$('iab').style.display='';
+ $('spwl').style.display='';$('spw').onchange=function(){var t=this.checked?'text':'password';$('pw').type=t;$('pw2').type=t};
  $('tabs').style.display='';$('pw').style.display='';$('uch').style.display='none';$('uin').placeholder='Username';
- $('uin').value='';$('swu').style.display='none';$('codebox').style.display='none';
+ $('uin').value=lsg('ov_lastuser')||'';$('swu').style.display='none';$('codebox').style.display='none';
  $('uerr').textContent='Loading...';$('start').disabled=true;
  $('start').onclick=begin;$('tl').onclick=function(){amode('login')};$('ts').onclick=function(){amode('signup')};
- $('pw').onkeydown=$('pw2').onkeydown=function(e){if(e.key==='Enter')begin()};
+ $('pw').onkeydown=$('pw2').onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();begin()}};
  fbAuth.onAuthStateChanged(function(u){$('start').disabled=false;
   if(u){afterLogin(u)}else{clearInterval(hbT);cu=null;uk='';K={};WR={};AV='';setML([]);$('ptc').style.display='none';$('hb').style.display='none';$('pn').classList.remove('on');$('uerr').textContent='';show('intro')}});
 }catch(e){acct=false}}
@@ -541,7 +546,9 @@ function loadT(){show('teach');$('tl2').textContent='Loading...';$('tlist').inne
   rs[0].forEach(function(d){var v=d.data();if(!v||!v.u)return;var o=v.p||{},t=0,n=0;
    SETS.filter(isOff).forEach(function(x){var str=o[x.name]||'';flat(x).forEach(function(w,k){t+=bits(parseInt(str.charAt(k)||'0',16)||0);n++})});
    var st=v.st||{},pr=pm[d.id]||{};
-   L.push({u:v.u,t:t,pc:Math.round(t*100/(4*n)),s:(st.last===today()||st.last===yest())?st.s:0,td:st.d===today()?st.n:0,ll:pr.ll||0,seen:pr.seen||0,on:!!(pr.seen&&pr.on!==false&&now-pr.seen<150000),o:o,wr:v.wr||{},st:st,av:v.av||'',ml:v.ml||[]})});
+   L.push({u:v.u,t:t,pc:Math.round(t*100/(4*n)),s:(st.last===today()||st.last===yest())?st.s:0,td:st.d===today()?st.n:0,ll:pr.ll||0,seen:pr.seen||0,on:!!(pr.seen&&pr.on!==false&&now-pr.seen<150000),o:o,wr:v.wr||{},st:st,av:v.av||'',ml:v.ml||[],id:d.id})});
+  var gm={};L.forEach(function(r){var k=r.u.toLowerCase();(gm[k]=gm[k]||[]).push(r)});
+  Object.keys(gm).forEach(function(k){var g2=gm[k];if(g2.length<2)return;g2.sort(function(a,b){return b.t-a.t});var old=g2[0];g2.slice(1).forEach(function(r){if(old.t>0&&r.t===0)r.dupOf=old})});
   L.sort(function(a,b){return (b.on-a.on)||(b.t-a.t)});
   var no=L.filter(function(r){return r.on}).length;
   $('tl2').textContent='🟢 '+no+' online · '+L.length+' students'+(rs[1]?'':' · (presence unavailable: update Firestore rules)');
@@ -549,7 +556,14 @@ function loadT(){show('teach');$('tl2').textContent='Loading...';$('tlist').inne
    var h=document.createElement('div');h.style.cssText='display:flex;justify-content:space-between';
    var b1=document.createElement('b');b1.appendChild(avEl(r.av,24));b1.appendChild(document.createTextNode(' '+(r.on?'🟢 ':'⚪ ')+r.u));var b2=document.createElement('b');b2.textContent=r.pc+'%';h.appendChild(b1);h.appendChild(b2);d.appendChild(h);
    var pb=document.createElement('div');pb.className='pb';var i2=document.createElement('i');i2.style.width=r.pc+'%';pb.appendChild(i2);d.appendChild(pb);
-   var sm=document.createElement('small');sm.textContent=(r.on?'Online':'Offline · '+ago(r.seen))+' · kirgan: '+fmtT(r.ll)+' · '+l[2]+' '+l[1]+' · '+r.t+' ball · 🔥 '+r.s+' · bugun: '+r.td+' · 🏅 '+Object.keys(r.st.b||{}).length+(r.st.ex&&r.st.ex[0]?' · imtihon: '+Math.round(r.st.ex[0].sc*100/r.st.ex[0].tot)+'%':'');d.appendChild(sm);$('tlist').appendChild(d)})})
+   var sm=document.createElement('small');sm.textContent=(r.on?'Online':'Offline · '+ago(r.seen))+' · kirgan: '+fmtT(r.ll)+' · '+l[2]+' '+l[1]+' · '+r.t+' ball · 🔥 '+r.s+' · bugun: '+r.td+' · 🏅 '+Object.keys(r.st.b||{}).length+(r.st.ex&&r.st.ex[0]?' · imtihon: '+Math.round(r.st.ex[0].sc*100/r.st.ex[0].tot)+'%':'');d.appendChild(sm);
+   if(r.dupOf){var o=r.dupOf,rb=document.createElement('button');rb.style.cssText='margin-top:8px;padding:6px 12px;font-size:13px';rb.textContent='♻ Same username has an older account with progress: restore it here';var arm=false;
+    rb.onclick=function(ev){ev.stopPropagation();if(!arm){arm=true;rb.textContent='Sure? Tap again to restore';setTimeout(function(){arm=false;rb.textContent='♻ Same username has an older account with progress: restore it here'},4000);return}
+     var dt=function(u){return{u:u,p:o.o||{},st:o.st||{},wr:o.wr||{},av:o.av||'',ml:o.ml||[]}};
+     fbDb.collection('users').doc(r.id).set(dt(r.u)).then(function(){return fbDb.collection('users').doc(o.id).set(dt(o.u+' (old)'))}).then(function(){toast('Restored. Ask the student to log out and log in again.');loadT()})
+      .catch(function(){$('tl2').textContent='Restore failed: update the Firestore rules so the teacher account can write.'})};
+    d.appendChild(rb)}
+   $('tlist').appendChild(d)})})
  .catch(function(){$('tl2').textContent='No access. Check that the Firestore rules include this teacher account.'})}
 $('ptc').onclick=function(){$('pn').classList.remove('on');loadT()};$('trf').onclick=loadT;$('tbk2').onclick=goMenu;
 /* sound + install */
