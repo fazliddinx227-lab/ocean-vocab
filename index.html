@@ -132,7 +132,8 @@ h2{margin:6px 0 8px}
 </div>
 <script>
 var FB_CONFIG={apiKey:"AIzaSyCzeHsIaJevIHmqEyQuEzgh1ZURNM0rMoE",authDomain:"ocean-vocab.firebaseapp.com",projectId:"ocean-vocab",storageBucket:"ocean-vocab.firebasestorage.app",messagingSenderId:"185300083165",appId:"1:185300083165:web:1c9b143e8e549b43085634"};
-var GEM_MODEL='gemini-2.5-flash-lite'; /* change if Google retires this model */
+var GEM_MODELS=['gemini-3.1-flash-lite','gemini-2.5-flash-lite']; /* tried in order; update if Google retires a model */
+var gemErr='',gemLast=null;
 var RECAPTCHA_ENT=true; /* true = Fraud Defense (reCAPTCHA Enterprise) key, false = classic reCAPTCHA v3 key */
 var RECAPTCHA_KEY='6Lf6Y-8tAAAAADcXGHZBO1nKL1G7XIaDT_pvqvK1'; /* paste your Fraud Defense site key (Key ID) here to turn Gemini on */
 var AI_CFG={apiKey:"AIzaSyCzeHsIaJevIHmqEyQuEzgh1ZURNM0rMoE",authDomain:"ocean-vocab.firebaseapp.com",projectId:"ocean-vocab",storageBucket:"ocean-vocab.firebasestorage.app",messagingSenderId:"185300083165",appId:"1:185300083165:web:40a608df4764d4a5085634"};
@@ -600,12 +601,14 @@ function gemInit(){if(gemP)return gemP;
   var app=m[0].initializeApp(AI_CFG,'ai');
   m[1].initializeAppCheck(app,{provider:(RECAPTCHA_ENT?new m[1].ReCaptchaEnterpriseProvider(RECAPTCHA_KEY):new m[1].ReCaptchaV3Provider(RECAPTCHA_KEY)),isTokenAutoRefreshEnabled:true});
   var ai=m[2].getAI(app,{backend:new m[2].GoogleAIBackend()});
-  return m[2].getGenerativeModel(ai,{model:GEM_MODEL,generationConfig:{responseMimeType:'application/json'}})});
+  return function(name){return m[2].getGenerativeModel(ai,{model:name,generationConfig:{responseMimeType:'application/json'}})}});
  gemP.catch(function(){gemP=null});return gemP}
 function gemFill(ws){
- return gemInit().then(function(model){
+ return gemInit().then(function(mk){
   var prompt='You help Uzbek students learn English. For each English word or phrase in the JSON array below, return an object with these keys: "e" (the same word or phrase), "u" (array of 1 to 3 short Uzbek translations written in the Latin alphabet, most common meaning first), "x" (one natural English example sentence that uses it, level B1, under 15 words), "d" (a simple English definition under 12 words). Return ONLY a JSON array in the same order, nothing else. Words: '+JSON.stringify(ws.map(function(w){return w.e}));
-  return Promise.race([model.generateContent(prompt),new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'))},30000)})])})
+  var mi=0;function tryM(){var name=GEM_MODELS[mi++];if(!name)return Promise.reject(gemLast);
+   return Promise.race([mk(name).generateContent(prompt),new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'))},30000)})]).catch(function(e){gemLast=e;console.error('Gemini ('+name+'):',e);return tryM()})}
+  return tryM()})
  .then(function(r){var t=String(r.response.text()).replace(/^\s*```(?:json)?/i,'').replace(/```\s*$/,'').trim();var a=JSON.parse(t);if(!Array.isArray(a))throw new Error('bad');
   var any=false;
   ws.forEach(function(w,i){var o=a[i]||{};
@@ -647,8 +650,8 @@ $('ad_go').onclick=function(){
    if(w.d){var df=document.createElement('div');df.className='mp';df.style.cssText='margin:0;font-size:13px';df.textContent=w.d;r.appendChild(df)}
    l.appendChild(r)});
   btn.disabled=false;$('ad_sv').style.display='';
-  amsg(gem?"Tarjimalar tayyor: tekshiring (↻ boshqa variantni beradi), kerak bo'lsa tuzating, keyin Saqlash bosing.":quota?"Bepul tarjima limiti hozir tugagan: tarjimalarni o'zingiz yozing yoki keyinroq urinib ko'ring.":fail?fail+" ta so'z uchun tarjima topilmadi: o'zingiz yozing. Boshqalarini ham tekshirib chiqing.":"Tarjimalarni tekshiring (↻ boshqa variantni beradi), kerak bo'lsa tuzating, keyin Saqlash bosing.",!gem&&(quota||fail))}
- gemFill(ws).then(function(){render(true)},function(){amsg('Tarjima qilinmoqda... 0 / '+ws.length);Promise.all([worker(),worker(),worker()]).then(function(){render(false)})})};
+  amsg(gem?"Tarjimalar tayyor: tekshiring (↻ boshqa variantni beradi), kerak bo'lsa tuzating, keyin Saqlash bosing.":quota?"Bepul tarjima limiti hozir tugagan: tarjimalarni o'zingiz yozing yoki keyinroq urinib ko'ring.":fail?fail+" ta so'z uchun tarjima topilmadi: o'zingiz yozing. Boshqalarini ham tekshirib chiqing.":"Tarjimalarni tekshiring (↻ boshqa variantni beradi), kerak bo'lsa tuzating, keyin Saqlash bosing.",!gem&&(quota||fail));if(!gem&&gemErr)$('ad_m').textContent+=' [Gemini: '+gemErr+']'}
+ gemErr='';gemFill(ws).then(function(){render(true)},function(e){gemErr=String(e&&(e.message||e.code)||e).slice(0,220);amsg('Tarjima qilinmoqda... 0 / '+ws.length);Promise.all([worker(),worker(),worker()]).then(function(){render(false)})})};
 $('ad_sv').onclick=function(){var rows=[].slice.call($('ad_l').children),ws=[],bad=0;
  rows.forEach(function(r){var u=r.u.value.trim();if(!u){bad++;return}ws.push({e:r.e,u:u,x:r.x.value.trim(),d:r.d||''})});
  if(bad){amsg(bad+" ta so'zga tarjima yozing yoki ✕ bilan olib tashlang.",1);return}
