@@ -549,7 +549,7 @@ function loadT(){show('teach');$('tl2').textContent='Loading...';$('tlist').inne
    L.push({u:v.u,t:t,pc:Math.round(t*100/(4*n)),s:(st.last===today()||st.last===yest())?st.s:0,td:st.d===today()?st.n:0,ll:pr.ll||0,seen:pr.seen||0,on:!!(pr.seen&&pr.on!==false&&now-pr.seen<150000),o:o,wr:v.wr||{},st:st,av:v.av||'',ml:v.ml||[],id:d.id})});
   var gm={};L.forEach(function(r){var k=r.u.toLowerCase();(gm[k]=gm[k]||[]).push(r)});
   L.forEach(function(r){r.w=r.t+(r.ml||[]).length*5+Math.round(((r.st&&r.st.tot)||0)/10)});
-  Object.keys(gm).forEach(function(k){var g2=gm[k];if(g2.length<2)return;g2.sort(function(a,b){return b.w-a.w});var old=g2[0];g2.forEach(function(r){r.dup=true});g2.slice(1).forEach(function(r){if(old.w>0&&r.w===0){r.dupOf=old;old.donor=true}})});
+  Object.keys(gm).forEach(function(k){var g2=gm[k];if(g2.length<2)return;g2.forEach(function(r){r.dup=true;var best=null;g2.forEach(function(x){if(x!==r&&x.w>0&&(!best||x.w>best.w))best=x});r.dupOf=best})});
   L.sort(function(a,b){return (b.on-a.on)||(b.t-a.t)});
   var no=L.filter(function(r){return r.on}).length;
   $('tl2').textContent='🟢 '+no+' online · '+L.length+' students'+(rs[1]?'':' · (presence unavailable: update Firestore rules)');
@@ -558,12 +558,12 @@ function loadT(){show('teach');$('tl2').textContent='Loading...';$('tlist').inne
    var b1=document.createElement('b');b1.appendChild(avEl(r.av,24));b1.appendChild(document.createTextNode(' '+(r.on?'🟢 ':'⚪ ')+r.u));var b2=document.createElement('b');b2.textContent=r.pc+'%';h.appendChild(b1);h.appendChild(b2);d.appendChild(h);
    var pb=document.createElement('div');pb.className='pb';var i2=document.createElement('i');i2.style.width=r.pc+'%';pb.appendChild(i2);d.appendChild(pb);
    var sm=document.createElement('small');sm.textContent=(r.on?'Online':'Offline · '+ago(r.seen))+' · kirgan: '+fmtT(r.ll)+' · '+l[2]+' '+l[1]+' · '+r.t+' ball · 🔥 '+r.s+' · bugun: '+r.td+' · 🏅 '+Object.keys(r.st.b||{}).length+(r.st.ex&&r.st.ex[0]?' · imtihon: '+Math.round(r.st.ex[0].sc*100/r.st.ex[0].tot)+'%':'');d.appendChild(sm);
-   if(r.dupOf){var o=r.dupOf,rb=document.createElement('button');rb.style.cssText='margin-top:8px;padding:6px 12px;font-size:13px';rb.textContent='♻ Same username has an older account with progress: restore it here';var arm=false;
-    rb.onclick=function(ev){ev.stopPropagation();if(!arm){arm=true;rb.textContent='Sure? Tap again to restore';setTimeout(function(){arm=false;rb.textContent='♻ Same username has an older account with progress: restore it here'},4000);return}
-     var dt=function(u){return{u:u,p:o.o||{},st:o.st||{},wr:o.wr||{},av:o.av||'',ml:o.ml||[]}};
-     fbDb.collection('users').doc(r.id).set(dt(r.u)).then(function(){return fbDb.collection('users').doc(o.id).set(dt(o.u+' (old)'))}).then(function(){toast('Restored. Ask the student to log out and log in again.');loadT()})
+   if(r.dupOf){var o=r.dupOf,rb=document.createElement('button');rb.style.cssText='margin-top:8px;padding:6px 12px;font-size:13px';rb.textContent='♻ Copy data from the other "'+r.u+'" account into this one';var arm=false;
+    rb.onclick=function(ev){ev.stopPropagation();if(!arm){arm=true;rb.textContent=r.w>0?'This account has its own data. It will be replaced (a backup stays as "(old)"). Tap again to confirm':'Sure? Tap again to restore';setTimeout(function(){arm=false;rb.textContent='♻ Copy data from the other "'+r.u+'" account into this one'},5000);return}
+     var dr=function(x,u){return{u:u,p:x.o||{},st:x.st||{},wr:x.wr||{},av:x.av||'',ml:x.ml||[]}};
+     fbDb.collection('users').doc(r.id).set(dr(o,r.u)).then(function(){return fbDb.collection('users').doc(o.id).set(r.w>0?dr(r,o.u+' (old)'):dr(o,o.u+' (old)'))}).then(function(){toast('Restored. Ask the student to log out and log in again.');loadT()})
       .catch(function(){$('tl2').textContent='Restore failed: update the Firestore rules so the teacher account can write.'})};
-    d.appendChild(rb)}else if(r.dup&&!r.donor){d.appendChild(el('div','⚠ Same username appears twice, but both accounts have progress, so it cannot be restored automatically.','font-size:12px;color:var(--no);margin-top:6px'))}
+    d.appendChild(rb)}
    $('tlist').appendChild(d)})})
  .catch(function(){$('tl2').textContent='No access. Check that the Firestore rules include this teacher account.'})}
 $('ptc').onclick=function(){$('pn').classList.remove('on');loadT()};$('trf').onclick=loadT;$('tbk2').onclick=goMenu;
