@@ -605,7 +605,7 @@ function gemInit(){if(gemP)return gemP;
  gemP.catch(function(){gemP=null});return gemP}
 function gemFill(ws){
  return gemInit().then(function(mk){
-  var prompt='You help Uzbek students learn English. For each English word or phrase in the JSON array below, return an object with these keys: "e" (the same word or phrase), "u" (array of 1 to 3 short Uzbek translations written in the Latin alphabet, most common meaning first), "x" (one natural English example sentence that uses it, level B1, under 15 words), "d" (a simple English definition under 12 words). Return ONLY a JSON array in the same order, nothing else. Words: '+JSON.stringify(ws.map(function(w){return w.e}));
+  var prompt='You help Uzbek students learn English. For each English word or phrase in the JSON array below, return an object with these keys: "e" (the same word or phrase exactly as given), "c" (the correct English spelling; repeat it exactly if it is already correct), "u" (array of 1 to 3 short Uzbek translations written in the Latin alphabet, most common meaning first), "x" (one natural English example sentence that uses it, level B1, under 15 words), "d" (a simple English definition under 12 words). If a word is misspelled, put the likely correct spelling in "c" and translate that word. Return ONLY a JSON array in the same order, nothing else. Words: '+JSON.stringify(ws.map(function(w){return w.e}));
   var mi=0;function tryM(){var name=GEM_MODELS[mi++];if(!name)return Promise.reject(gemLast);
    return Promise.race([mk(name).generateContent(prompt),new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'))},30000)})]).catch(function(e){gemLast=e;console.error('Gemini ('+name+'):',e);return tryM()})}
   return tryM()})
@@ -615,7 +615,7 @@ function gemFill(ws){
    if(!o.e||String(o.e).toLowerCase()!==w.e.toLowerCase()){var f=a.filter(function(z){return z&&z.e&&String(z.e).toLowerCase()===w.e.toLowerCase()})[0];if(f)o=f}
    var us=(Array.isArray(o.u)?o.u:[o.u]).filter(function(x){return typeof x==='string'&&x.trim()}).map(function(x){return x.trim()});
    if(us.length)any=true;
-   w.c=us;if(!w.u)w.u=us[0]||'';w.x=typeof o.x==='string'?o.x.trim():'';w.d=typeof o.d==='string'?o.d.trim():''});
+   var cf=typeof o.c==='string'?o.c.trim():'';w.fix=(cf&&cf.toLowerCase()!==w.e.toLowerCase())?cf:'';w.c=us;if(!w.u)w.u=us[0]||'';w.x=typeof o.x==='string'?o.x.trim():'';w.d=typeof o.d==='string'?o.d.trim():''});
   if(!any)throw new Error('empty');return true})}
 function amsg(t,bad){var m=$('ad_m');m.textContent=t;m.className='msg'+(bad?' no':'')}
 var addTarget=null,AI_TXT="Reading yoki boshqa joydan o'rgangan inglizcha so'zlaringizni yozing: 5 tadan 30 tagacha, har birini yangi qatordan. Tarjima va misollar avtomatik topiladi, keyin tekshirib saqlaysiz.";
@@ -642,9 +642,11 @@ $('ad_go').onclick=function(){
   var l=$('ad_l');
   ws.forEach(function(w){var r=document.createElement('div');r.className='set';r.style.cssText='display:block;margin-bottom:10px';r.e=w.e;r.d=w.d;
    var h=document.createElement('div');h.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px';
-   var b=document.createElement('b');b.textContent=w.e;h.appendChild(b);var bx=document.createElement('span');
+   r.en=document.createElement('input');r.en.className='pi';r.en.value=w.e;r.en.style.cssText='font-weight:bold;margin:0;flex:1;width:auto;min-width:0';h.appendChild(r.en);var bx=document.createElement('span');
    var ci=0;if(w.c.length>1){var cy=document.createElement('button');cy.className='g';cy.style.cssText='padding:4px 10px;font-size:13px;margin-right:6px';cy.textContent='↻';cy.title='Boshqa variant';cy.onclick=function(){ci=(ci+1)%w.c.length;r.u.value=w.c[ci]};bx.appendChild(cy)}
    var rm=document.createElement('button');rm.className='g';rm.style.cssText='padding:4px 10px;font-size:13px';rm.textContent='✕';rm.onclick=function(){r.remove()};bx.appendChild(rm);h.appendChild(bx);r.appendChild(h);
+   if(w.fix){var fx=document.createElement('div');fx.className='mp';fx.style.cssText='margin:0 0 6px;font-size:13px;color:var(--no)';fx.textContent="Imlo xatosi bo'lishi mumkin. To'g'risi: "+w.fix+' ';
+    var fb=document.createElement('button');fb.className='g';fb.style.cssText='padding:3px 10px;font-size:13px';fb.textContent='Tuzatish';fb.onclick=function(){r.en.value=w.fix;fx.remove()};fx.appendChild(fb);r.appendChild(fx)}
    r.u=document.createElement('input');r.u.className='pi';r.u.value=w.u;r.u.placeholder="O'zbekcha tarjima (o'zingiz yozing)";r.appendChild(r.u);
    r.x=document.createElement('input');r.x.className='pi';r.x.value=w.x;r.x.placeholder='Misol gap (ixtiyoriy)';r.appendChild(r.x);
    if(w.d){var df=document.createElement('div');df.className='mp';df.style.cssText='margin:0;font-size:13px';df.textContent=w.d;r.appendChild(df)}
@@ -653,10 +655,14 @@ $('ad_go').onclick=function(){
   amsg(gem?"Tarjimalar tayyor: tekshiring (↻ boshqa variantni beradi), kerak bo'lsa tuzating, keyin Saqlash bosing.":quota?"Bepul tarjima limiti hozir tugagan: tarjimalarni o'zingiz yozing yoki keyinroq urinib ko'ring.":fail?fail+" ta so'z uchun tarjima topilmadi: o'zingiz yozing. Boshqalarini ham tekshirib chiqing.":"Tarjimalarni tekshiring (↻ boshqa variantni beradi), kerak bo'lsa tuzating, keyin Saqlash bosing.",!gem&&(quota||fail));if(!gem&&gemErr)$('ad_m').textContent+=' [Gemini: '+gemErr+']'}
  gemErr='';gemFill(ws).then(function(){render(true)},function(e){gemErr=String(e&&(e.message||e.code)||e).slice(0,220);amsg('Tarjima qilinmoqda... 0 / '+ws.length);Promise.all([worker(),worker(),worker()]).then(function(){render(false)})})};
 $('ad_sv').onclick=function(){var rows=[].slice.call($('ad_l').children),ws=[],bad=0;
- rows.forEach(function(r){var u=r.u.value.trim();if(!u){bad++;return}ws.push({e:r.e,u:u,x:r.x.value.trim(),d:r.d||''})});
+ var seenE={},dupE=0,emptyE=0;
+ rows.forEach(function(r){var u=r.u.value.trim(),e=r.en.value.trim();if(!e){emptyE++;return}if(!u){bad++;return}var k=e.toLowerCase();if(seenE[k]){dupE++;return}seenE[k]=1;ws.push({e:e,u:u,x:r.x.value.trim(),d:r.d||''})});
+ if(emptyE){amsg("Inglizcha so'z bo'sh qolgan qator bor.",1);return}
+ if(dupE){amsg(dupE+" ta so'z takrorlangan (bir xil inglizcha so'z). Bittasini ✕ bilan olib tashlang.",1);return}
  if(bad){amsg(bad+" ta so'zga tarjima yozing yoki ✕ bilan olib tashlang.",1);return}
  if(addTarget){var L=ML.filter(function(l){return l.id===addTarget})[0];if(!L){addTarget=null;goList('my');return}
   if(ws.length<1){amsg("Kamida 1 ta so'z bo'lishi kerak.",1);return}
+  var ex2={};L.w.forEach(function(o){ex2[o.e.toLowerCase()]=1});var cl=ws.filter(function(w){return ex2[w.e.toLowerCase()]});if(cl.length){amsg("Ro'yxatda allaqachon bor: "+cl[0].e,1);return}
   if(L.w.length+ws.length>30){amsg("Ro'yxatda jami 30 tadan ko'p so'z bo'lmasligi kerak.",1);return}
   L.w=L.w.concat(ws);var lid=L.id;setML(ML);save();toast(ws.length+" ta so'z qo'shildi");$('ad_t').value='';
   var st=SETS.filter(function(x){return x.mid===lid})[0];cur={n:st.name,g:st.g,secs:st.sections,w:flat(st),mid:st.mid};catf='my';addTarget=null;chips();goMode();return}
