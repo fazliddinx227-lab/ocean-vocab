@@ -63,8 +63,8 @@ h2{margin:6px 0 8px}
  #menu>#stats,#menu>#wod{grid-column:auto}
  #mode>.set{grid-column:auto;margin-bottom:0}
  #mode>#amr,#mode>#mlist,#mode>#mex{grid-column:1/-1}
- #flash,#quiz,#match,#typ,#exm,#spd,#lis,#mem,#addw,#bdg,#tdet,#srs,#dc,#sb,#cz,#pr,#sq{max-width:760px;margin-left:auto;margin-right:auto}
- #flash.on,#quiz.on,#match.on,#typ.on,#exm.on,#spd.on,#lis.on,#mem.on,#addw.on,#bdg.on,#tdet.on,#srs.on,#dc.on,#sb.on,#cz.on,#pr.on,#sq.on{display:block}
+ #flash,#quiz,#match,#typ,#exm,#spd,#lis,#mem,#addw,#bdg,#tdet,#srs,#dc,#sbk,#cz,#pr,#sq{max-width:760px;margin-left:auto;margin-right:auto}
+ #flash.on,#quiz.on,#match.on,#typ.on,#exm.on,#spd.on,#lis.on,#mem.on,#addw.on,#bdg.on,#tdet.on,#srs.on,#dc.on,#sbk.on,#cz.on,#pr.on,#sq.on{display:block}
  .fc{min-height:300px;font-size:2.4rem}.qw{font-size:2.4rem}
  #teach{max-width:900px;margin:0 auto}
 }
@@ -147,7 +147,7 @@ h2{margin:6px 0 8px}
 <section class="scr" id="wl"><h2 id="wlt"></h2><div class="mp" id="wlc"></div><div id="wll"></div><button class="g" id="wlb" style="width:100%;margin-top:8px">← Orqaga</button></section>
 <section class="scr" id="srs"><div class="cnt" id="srn"></div><div class="fc" id="srw" style="cursor:default"></div><div class="row"><button class="g sp" id="srsp">🔊</button><button id="srshow">Ko'rsatish</button></div><div class="row" id="srrate" style="display:none"><button class="g" id="srno">✗ Bilmadim</button><button id="sryes">✓ Bildim</button></div><div class="row"><button class="g" id="srb">Orqaga</button></div></section>
 <section class="scr" id="dc"><div class="cnt" id="dcn"></div><div class="qw" id="dcw"></div><div id="dco"></div><div class="row"><button id="dcx" style="display:none">Keyingi →</button><button class="g" id="dcb">Orqaga</button></div></section>
-<section class="scr" id="sb"><div class="cnt" id="sbn"></div><div class="mp" id="sbh" style="text-align:center"></div><div id="sba" style="min-height:64px;border:3px dashed var(--a);border-radius:16px;padding:8px;margin:10px 0;display:flex;flex-wrap:wrap;gap:6px"></div><div id="sbt" style="display:flex;flex-wrap:wrap;gap:6px"></div><div class="msg" id="sbm"></div><div class="row"><button id="sbc">Tekshirish</button><button class="g" id="sbr">↺ Qaytadan</button></div><div class="row"><button class="g" id="sbb">Orqaga</button></div></section>
+<section class="scr" id="sbk"><div class="cnt" id="sbn"></div><div class="mp" id="sbh" style="text-align:center"></div><div id="sba" style="min-height:64px;border:3px dashed var(--a);border-radius:16px;padding:8px;margin:10px 0;display:flex;flex-wrap:wrap;gap:6px"></div><div id="sbt" style="display:flex;flex-wrap:wrap;gap:6px"></div><div class="msg" id="sbm"></div><div class="row"><button id="sbc">Tekshirish</button><button class="g" id="sbr">↺ Qaytadan</button></div><div class="row"><button class="g" id="sbb">Orqaga</button></div></section>
 <section class="scr" id="cz"><div class="cnt" id="czn"></div><div class="qw" id="czq" style="font-size:1.4rem;line-height:1.4"></div><div class="mp" id="czh" style="text-align:center"></div><div id="czo"></div><div class="row"><button id="czx" style="display:none">Keyingi →</button><button class="g" id="czb">Orqaga</button></div></section>
 <section class="scr" id="pr"><div class="cnt" id="prn"></div><div class="qw" id="prw"></div><div class="mp" id="prh" style="text-align:center"></div><div class="row"><button class="g" id="prl">🔊 Eshiting</button><button id="prm">🎤 Ayting</button></div><div class="msg" id="prr"></div><div class="row"><button id="prx" style="display:none">Keyingi →</button><button class="g" id="prb">Orqaga</button></div></section>
 <section class="scr" id="sq"><div class="mp" id="sqt" style="text-align:center"></div><div class="qw" id="sqq" style="font-size:1.5rem;line-height:1.4"></div><div class="gh">Foydali iboralar (bosib eshiting)</div><div id="sqp" style="display:flex;flex-wrap:wrap;gap:8px"></div><div class="cnt" id="sqc"></div><div class="row"><button id="sqs">🎤 Javobni yozib olish</button></div><audio id="sqa" controls style="width:100%;display:none;margin-top:8px"></audio><div class="row"><button id="sqd" style="display:none">✓ Javob berdim</button></div><div class="row"><button class="g" id="sqb">Orqaga</button></div></section>
@@ -290,7 +290,7 @@ function begin(){
  if(amd==='signup'&&p!==$('pw2').value){err('Passwords do not match.');return}
  $('start').disabled=true;err('Please wait...');
  var pr=amd==='signup'?fbAuth.createUserWithEmailAndPassword(uem(n),p):fbAuth.signInWithEmailAndPassword(uem(n),p);
- pr.then(function(c){lss('ov_lastuser',n);try{if(window.PasswordCredential&&navigator.credentials)navigator.credentials.store(new PasswordCredential({id:n,password:p,name:n}))}catch(e){}$('pw').value='';$('pw2').value='';err('');if(amd==='signup')return fbDb.collection('users').doc(c.user.uid).set({u:n,p:{}}).catch(function(){})})
+ pr.then(function(c){lss('ov_lastuser',n);try{if(window.PasswordCredential&&navigator.credentials){var cp=navigator.credentials.store(new PasswordCredential({id:n,password:p,name:n}));if(cp&&cp.catch)cp.catch(function(){})}}catch(e){}$('pw').value='';$('pw2').value='';err('');if(amd==='signup')return fbDb.collection('users').doc(c.user.uid).set({u:n,p:{}}).catch(function(){})})
   .catch(function(e){err(aerr(e))}).then(function(){$('start').disabled=false})}
 if(FB_CONFIG&&typeof firebase!=='undefined'){try{
  firebase.initializeApp(FB_CONFIG);fbAuth=firebase.auth();fbDb=firebase.firestore();acct=true;try{fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)}catch(e){}
@@ -621,7 +621,7 @@ $('avf').onchange=function(){var f=this.files[0];this.value='';if(!f)return;var 
   x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);AV=c.toDataURL('image/jpeg',0.8);setAv();award('face');save();toast('Rasm saqlandi')};
   im.onerror=function(){toast('Rasm ochilmadi')};im.src=r.result};r.readAsDataURL(f)};
 /* back buttons at the top */
-[['srs','srb'],['dc','dcb'],['sb','sbb'],['cz','czb'],['pr','prb'],['sq','sqb'],['wl','wlb'],['addw','adb'],['lst','lbk'],['mode','mb'],['flash','fb'],['quiz','qb'],['match','mbk'],['typ','tbk'],['exm','ebk'],['mem','mmb'],['spd','sb'],['lis','lb'],['bdg','bbk'],['tdet','tdbk'],['teach','tbk2']].forEach(function(q){
+[['srs','srb'],['dc','dcb'],['sbk','sbb'],['cz','czb'],['pr','prb'],['sq','sqb'],['wl','wlb'],['addw','adb'],['lst','lbk'],['mode','mb'],['flash','fb'],['quiz','qb'],['match','mbk'],['typ','tbk'],['exm','ebk'],['mem','mmb'],['spd','sb'],['lis','lb'],['bdg','bbk'],['tdet','tdbk'],['teach','tbk2']].forEach(function(q){
  var sec=$(q[0]),b=$(q[1]),t=document.createElement('button');t.className='g tb';t.textContent='← Orqaga';t.onclick=function(){b.click()};sec.insertBefore(t,sec.firstChild);b.style.display='none'});
 /* word list */
 function goWL(){var l=$('wll');l.innerHTML='';$('wlt').textContent=cur.n;$('wlc').textContent=pool.length+" ta so'z · ● = shu o'yinda topilgan (Flashcard, Viktorina, Moslashtirish, Yozish)";
@@ -756,7 +756,7 @@ $('srno').onclick=function(){var w=sQ[sI];wrong(w);sQ.push(w);sI++;srsQ()};
 $('srsp').onclick=function(){if(sQ[sI])say(sQ[sI][0])};
 /* ===== daily challenge ===== */
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-function dcQs(){var r=rng(dayN()*7919+13),pool0=[];SETS.forEach(function(x){if(x.g!==PG)pool0=pool0.concat(flat(x))});
+function dcQs(){var r=rng(dayN()*7919+13),pool0=[];SETS.forEach(function(x){if(x.g!==PG)pool0=pool0.concat(flat(x).filter(function(w){return w[3]}))});
  var pick=[],used={},guard=0;while(pick.length<10&&pool0.length>20&&guard++<500){var w=pool0[Math.floor(r()*pool0.length)];if(used[w[2]])continue;used[w[2]]=1;pick.push(w)}
  return pick.map(function(w){var ds=[],tr=0;while(ds.length<3&&tr++<300){var x=pool0[Math.floor(r()*pool0.length)];if(x!==w&&x[1]!==w[1]&&ds.indexOf(x)<0)ds.push(x)}
   var o=ds.concat([w]);for(var i=o.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=o[i];o[i]=o[j];o[j]=t}return{w:w,o:o}})}
@@ -776,7 +776,7 @@ function dcEnd(){var n=dcq.length;ST.dc={d:today(),sc:dcs,tot:n};ST.dch=ST.dch||
 /* ===== sentence builder ===== */
 var sbq=[],sbi=0,sbs=0,sbT=[],sbA=[],sbDone=false;
 function sbPool(){return pool.filter(function(w){var n=w[3]?w[3].split(/\s+/).length:0;return n>=4&&n<=14})}
-$('mbs').onclick=function(){sbq=sh(sbPool()).slice(0,10);if(sbq.length<3)return;sbi=0;sbs=0;show('sb');sbShow()};
+$('mbs').onclick=function(){sbq=sh(sbPool()).slice(0,10);if(sbq.length<3)return;sbi=0;sbs=0;show('sbk');sbShow()};
 function sbShow(){var w=sbq[sbi];sbDone=false;$('sbm').textContent='';$('sbm').className='msg';$('sbc').style.display='';$('sbc').textContent='Tekshirish';$('sbr').style.display='';
  if(!w){$('sbn').textContent='Tugadi';$('sbh').textContent='';$('sba').innerHTML='';$('sbt').innerHTML='';$('sbc').style.display='none';$('sbr').style.display='none';$('sbm').textContent=sbs+' / '+sbq.length;if(sbs>=8)confetti();return}
  $('sbn').textContent=(sbi+1)+' / '+sbq.length;$('sbh').textContent="So'z: "+w[0]+' = '+w[1];
