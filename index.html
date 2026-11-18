@@ -63,8 +63,8 @@ h2{margin:6px 0 8px}
  #menu>#stats,#menu>#wod{grid-column:auto}
  #mode>.set{grid-column:auto;margin-bottom:0}
  #mode>#amr,#mode>#mlist,#mode>#mex{grid-column:1/-1}
- #flash,#quiz,#match,#typ,#exm,#spd,#lis,#mem,#addw,#bdg,#tdet,#srs,#dc,#sbk,#cz,#pr,#sq{max-width:760px;margin-left:auto;margin-right:auto}
- #flash.on,#quiz.on,#match.on,#typ.on,#exm.on,#spd.on,#lis.on,#mem.on,#addw.on,#bdg.on,#tdet.on,#srs.on,#dc.on,#sbk.on,#cz.on,#pr.on,#sq.on{display:block}
+ #flash,#quiz,#match,#typ,#exm,#spd,#lis,#mem,#addw,#bdg,#tdet,#srs,#dc,#sbk,#cz,#pr,#sq,#sql{max-width:760px;margin-left:auto;margin-right:auto}
+ #flash.on,#quiz.on,#match.on,#typ.on,#exm.on,#spd.on,#lis.on,#mem.on,#addw.on,#bdg.on,#tdet.on,#srs.on,#dc.on,#sbk.on,#cz.on,#pr.on,#sq.on,#sql.on{display:block}
  .fc{min-height:300px;font-size:2.4rem}.qw{font-size:2.4rem}
  #teach{max-width:900px;margin:0 auto}
 }
@@ -154,7 +154,10 @@ h2{margin:6px 0 8px}
 <section class="scr" id="sbk"><div class="cnt" id="sbn"></div><div class="mp" id="sbh" style="text-align:center"></div><div id="sba" style="min-height:64px;border:3px dashed var(--a);border-radius:16px;padding:8px;margin:10px 0;display:flex;flex-wrap:wrap;gap:6px"></div><div id="sbt" style="display:flex;flex-wrap:wrap;gap:6px"></div><div class="msg" id="sbm"></div><div class="row"><button id="sbc">Tekshirish</button><button class="g" id="sbr">↺ Qaytadan</button></div><div class="row"><button class="g" id="sbb">Orqaga</button></div></section>
 <section class="scr" id="cz"><div class="cnt" id="czn"></div><div class="qw" id="czq" style="font-size:1.4rem;line-height:1.4"></div><div class="mp" id="czh" style="text-align:center"></div><div id="czo"></div><div class="row"><button id="czx" style="display:none">Keyingi →</button><button class="g" id="czb">Orqaga</button></div></section>
 <section class="scr" id="pr"><div class="cnt" id="prn"></div><div class="qw" id="prw"></div><div class="mp" id="prh" style="text-align:center"></div><div class="row"><button class="g" id="prl">🔊 Eshiting</button><button id="prm">🎤 Ayting</button></div><div class="msg" id="prr"></div><div class="row"><button id="prx" style="display:none">Keyingi →</button><button class="g" id="prb">Orqaga</button></div></section>
-<section class="scr" id="sq"><div class="mp" id="sqt" style="text-align:center"></div><div class="qw" id="sqq" style="font-size:1.5rem;line-height:1.4"></div><div class="gh">Foydali iboralar (bosib eshiting)</div><div id="sqp" style="display:flex;flex-wrap:wrap;gap:8px"></div><div class="cnt" id="sqc"></div><div class="row"><button id="sqs">🎤 Javobni yozib olish</button></div><audio id="sqa" controls style="width:100%;display:none;margin-top:8px"></audio><div class="row"><button id="sqd" style="display:none">✓ Javob berdim</button></div><div class="row"><button class="g" id="sqb">Orqaga</button></div></section>
+<section class="scr" id="sq"><div class="mp" id="sqt" style="text-align:center"></div><div class="qw" id="sqq" style="font-size:1.5rem;line-height:1.4"></div><div class="row"><button class="g" id="sqpv">← Oldingi</button><button class="g" id="sqrn">🎲 Tasodifiy</button><button class="g" id="sqnx">Keyingi →</button></div>
+<button class="g" id="sqall" style="width:100%;margin:8px 0 0">📚 Barcha Speaking savollari</button>
+<div class="gh">Foydali iboralar (bosib eshiting)</div><div id="sqp" style="display:flex;flex-wrap:wrap;gap:8px"></div><div class="cnt" id="sqc"></div><div class="row"><button id="sqs">🎤 Javobni yozib olish</button></div><audio id="sqa" controls style="width:100%;display:none;margin-top:8px"></audio><div class="row"><button id="sqd" style="display:none">✓ Javob berdim</button></div><div class="row"><button class="g" id="sqb">Orqaga</button></div></section>
+<section class="scr" id="sql"><h2>🗣️ Speaking savollari</h2><div id="sqlst"></div><button class="g" id="sqlb" style="width:100%;margin-top:8px">← Orqaga</button></section>
 <section class="scr" id="bdg"><h2>🏅 Yutuqlar</h2><div class="mp" id="bdc"></div><div id="bdl"></div><button class="g" id="bbk" style="width:100%;margin-top:8px">← Orqaga</button></section>
 <section class="scr" id="exm"><div class="cnt" id="en"></div><div class="qw" id="eq" style="font-size:1.6rem"></div><div id="eo"></div><input id="ei" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Inglizchasini yozing" style="display:none"><div class="row" style="margin-top:12px"><button id="enx">Keyingi →</button><button class="g" id="ebk">Chiqish</button></div></section>
 <section class="scr" id="tdet"><h2 id="tdn"></h2><div id="tdb"></div><button class="g" id="tdbk" style="width:100%;margin-top:12px">← Back</button></section>
@@ -629,10 +632,10 @@ $('pin').onclick=function(){$('pn').classList.remove('on');if(dip){dip.prompt()}
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});
 /* avatar */
 function avEl(a,sz,name,noZoom){var e,has=false;
- if(a&&/^data:image\/(jpeg|png);base64,[A-Za-z0-9+\/=]+$/.test(a)&&a.length<120000){e=document.createElement('img');e.src=a;has=true;e.style.cssText='width:'+sz+'px;height:'+sz+'px;border-radius:50%;object-fit:cover;vertical-align:middle'}
+ if(a&&/^data:image\/(jpeg|png);base64,[A-Za-z0-9+\/=]+$/.test(a)&&a.length<260000){e=document.createElement('img');e.src=a;has=true;e.style.cssText='width:'+sz+'px;height:'+sz+'px;border-radius:50%;object-fit:cover;vertical-align:middle'}
  else{e=document.createElement('span');has=!!(a&&a.indexOf('e:')===0);e.textContent=has?a.slice(2):'👤';e.style.cssText='font-size:'+Math.round(sz*0.8)+'px;vertical-align:middle'}
  if(has&&!noZoom){e.style.cursor='zoom-in';e.title='Kattalashtirish';e.onclick=function(ev){ev.stopPropagation();zoomAv(a,name)}}return e}
-function zoomAv(a,name){var z=$('zm');z.innerHTML='';var big=avEl(a,Math.round(Math.min(innerWidth,innerHeight)*0.7),'',true);big.style.cssText+=';max-width:90vw;max-height:70vh';z.appendChild(big);
+function zoomAv(a,name){var z=$('zm');z.innerHTML='';var big=avEl(a,Math.round(Math.min(560,innerWidth*0.85,innerHeight*0.7)),'',true);big.style.cssText+=';max-width:90vw;max-height:70vh';z.appendChild(big);
  if(name)z.appendChild(el('div',name,'color:#fff;margin-top:14px;font-size:1.2rem;font-weight:bold'));z.style.display='flex'}
 $('zm').onclick=function(){this.style.display='none'};
 document.addEventListener('keydown',function(e){if(e.key==='Escape')$('zm').style.display='none'});
@@ -643,11 +646,11 @@ function buildEmo(){var g=$('avg');g.innerHTML='';EMO.concat(['✕']).forEach(fu
 $('ave').onclick=function(){var g=$('avg');buildEmo();g.style.display=g.style.display==='flex'?'none':'flex'};
 $('avu').onclick=function(){$('avf').click()};
 $('avf').onchange=function(){var f=this.files[0];this.value='';if(!f)return;var r=new FileReader();
- r.onload=function(){var im=new Image();im.onload=function(){var S=256,c=document.createElement('canvas');c.width=c.height=S;var x=c.getContext('2d'),m=Math.min(im.width,im.height);
-  x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);AV=c.toDataURL('image/jpeg',0.82);setAv();award('face');save();toast('Rasm saqlandi')};
+ r.onload=function(){var im=new Image();im.onload=function(){var S=Math.max(64,Math.min(400,im.width,im.height)),c=document.createElement('canvas');c.width=c.height=S;var x=c.getContext('2d'),m=Math.min(im.width,im.height);
+  x.imageSmoothingQuality='high';x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);AV=c.toDataURL('image/jpeg',0.88);setAv();award('face');save();toast('Rasm saqlandi')};
   im.onerror=function(){toast('Rasm ochilmadi')};im.src=r.result};r.readAsDataURL(f)};
 /* back buttons at the top */
-[['srs','srb'],['dc','dcb'],['sbk','sbb'],['cz','czb'],['pr','prb'],['sq','sqb'],['wl','wlb'],['addw','adb'],['lst','lbk'],['mode','mb'],['flash','fb'],['quiz','qb'],['match','mbk'],['typ','tbk'],['exm','ebk'],['mem','mmb'],['spd','sb'],['lis','lb'],['bdg','bbk'],['tdet','tdbk'],['teach','tbk2']].forEach(function(q){
+[['sql','sqlb'],['srs','srb'],['dc','dcb'],['sbk','sbb'],['cz','czb'],['pr','prb'],['sq','sqb'],['wl','wlb'],['addw','adb'],['lst','lbk'],['mode','mb'],['flash','fb'],['quiz','qb'],['match','mbk'],['typ','tbk'],['exm','ebk'],['mem','mmb'],['spd','sb'],['lis','lb'],['bdg','bbk'],['tdet','tdbk'],['teach','tbk2']].forEach(function(q){
  var sec=$(q[0]),b=$(q[1]),t=document.createElement('button');t.className='g tb';t.textContent='← Orqaga';t.onclick=function(){b.click()};sec.insertBefore(t,sec.firstChild);b.style.display='none'});
 /* word list */
 function goWL(){var l=$('wll');l.innerHTML='';$('wlt').textContent=cur.n;$('wlc').textContent=pool.length+" ta so'z · ● = shu o'yinda topilgan (Flashcard, Viktorina, Moslashtirish, Yozish)";
@@ -879,15 +882,32 @@ var SQ=[["Food & Eating","What kind of food do you like to eat most, and why?"],
 ["People & Family","Who do you admire most, and why?"],["People & Family","Do you spend much time with your grandparents?"],
 ["Travel & Places","Do you enjoy travelling? Where would you like to go next?"],["Travel & Places","What is your favourite building or place in your city?"],
 ["Books & Films","What kind of books or films do you enjoy?"],["Books & Films","Do you prefer reading a book or watching a movie?"],
-["Gifts & Music","Do you enjoy giving and receiving gifts?"],["Gifts & Music","What kind of music do you like to listen to?"]];
-function sqToday(){var q=SQ[dayN()%SQ.length],st=SETS.filter(function(x){return x.name==='Speaking · '+q[0]})[0],ws=st?flat(st).slice():[],r=rng(dayN()*31+7);
+["Gifts & Music","Do you enjoy giving and receiving gifts?"],["Gifts & Music","What kind of music do you like to listen to?"],
+["Food & Eating","What is your favourite meal of the day, and why?"],["Going Out & Walking","Where do you like to go when you want to spend time outside?"],
+["Money & Payments","Do you think it is better to save money or to spend it?"],["Shopping & Customer Service","Do you prefer shopping online or in a shop?"],
+["Technology & Phones","What apps do you use most, and why?"],["Sleep, Dreams & Relaxing","How many hours do you usually sleep, and do you feel rested?"],
+["Daily Routine & Mornings","How do you plan your day?"],["Creativity & Problem Solving","Tell me about a time you found a clever solution to a problem."],
+["Hobbies & Learning","How do you usually learn something new?"],["Sports & Events","What do you do to keep fit?"],
+["Pets & Environment","What can ordinary people do to help nature?"],["People & Family","Tell me about an older person who has taught you something."],
+["Travel & Places","Do you prefer holidays by the sea or in the mountains?"],["Books & Films","Tell me about a book or film that stayed in your memory."],
+["Gifts & Music","What is the best gift you have ever received?"]];
+function sqAt(idx){var q=SQ[idx%SQ.length],st=SETS.filter(function(x){return x.name==='Speaking · '+q[0]})[0],ws=st?flat(st).slice():[],r=rng(idx*31+7);
  for(var i=ws.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=ws[i];ws[i]=ws[j];ws[j]=t}return{topic:q[0],q:q[1],ph:ws.slice(0,5)}}
+function sqToday(){return sqAt(dayN()%SQ.length)}
+var sqIdx=0;
 var mrec=null,mch=[],rT=null;
 function stopRec(){clearInterval(rT);try{if(mrec&&mrec.state==='recording')mrec.stop()}catch(e){}}
-function sqOpen(){var q=sqToday();$('sqt').textContent='🗣️ '+q.topic;$('sqq').textContent=q.q;var p0=$('sqp');p0.innerHTML='';
+function sqOpen(idx){if(typeof idx==='number')sqIdx=((idx%SQ.length)+SQ.length)%SQ.length;else sqIdx=dayN()%SQ.length;stopRec();
+ var q=sqAt(sqIdx);$('sqt').textContent='🗣️ '+q.topic+' · '+(sqIdx+1)+' / '+SQ.length;$('sqq').textContent=q.q;var p0=$('sqp');p0.innerHTML='';
  q.ph.forEach(function(w){var b=document.createElement('button');b.className='g';b.style.cssText='padding:8px 12px;font-weight:normal';b.textContent=w[0]+' — '+w[1];b.onclick=function(){say(w[0])};p0.appendChild(b)});
- $('sqc').textContent=ST.sqd===today()?'Bugun bajarilgan ✓':"30–40 soniya gapiring. Yozuv faqat sizning telefoningizda qoladi, hech kimga yuborilmaydi.";
+ $('sqc').textContent=(sqIdx===dayN()%SQ.length&&ST.sqd===today())?'Bugun bajarilgan ✓':"30–40 soniya gapiring. Yozuv faqat sizning telefoningizda qoladi, hech kimga yuborilmaydi.";
  $('sqa').style.display='none';$('sqd').style.display='none';$('sqs').textContent='🎤 Javobni yozib olish';show('sq')}
+$('sqnx').onclick=function(){sqOpen(sqIdx+1)};$('sqpv').onclick=function(){sqOpen(sqIdx-1)};
+$('sqrn').onclick=function(){var n=Math.floor(Math.random()*SQ.length);if(n===sqIdx)n=(n+1)%SQ.length;sqOpen(n)};
+$('sqall').onclick=function(){stopRec();var l=$('sqlst');l.innerHTML='';var last='';
+ SQ.forEach(function(q,i){if(q[0]!==last){last=q[0];l.appendChild(el('div',q[0],'margin:14px 0 6px;font-size:12px;letter-spacing:1px;color:var(--m);font-weight:bold;text-transform:uppercase'))}
+  var b=document.createElement('button');b.className='set';b.style.marginBottom='8px';b.textContent=q[1];b.onclick=function(){sqOpen(i)};l.appendChild(b)});show('sql')};
+$('sqlb').onclick=function(){sqOpen(sqIdx)};
 $('sqs').onclick=function(){if(mrec&&mrec.state==='recording'){mrec.stop();return}
  if(!(navigator.mediaDevices&&window.MediaRecorder)){toast("Bu brauzerda yozib olish ishlamaydi. Javobni baland ovozda ayting.");$('sqd').style.display='';return}
  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stm){mch=[];mrec=new MediaRecorder(stm);mrec.ondataavailable=function(e){if(e.data&&e.data.size)mch.push(e.data)};
@@ -902,7 +922,7 @@ function drawDaily(){var d=$('daily');d.innerHTML='';var n=dueList().length;
  function card(t,sub,f){var b=document.createElement('button');b.className='set';var sp=document.createElement('span');sp.style.flex='1';sp.textContent=t;var sm=document.createElement('small');sm.textContent=sub;sp.appendChild(sm);b.appendChild(sp);b.appendChild(document.createTextNode(' ›'));b.onclick=f;d.appendChild(b)}
  card('📅 Bugungi takrorlash',n?Math.min(n,20)+" ta so'z takrorlashga tayyor":'Hozircha takrorlash kerak emas ✓',srsStart);
  card('⚡ Kunlik qiyinchilik',(ST.dc&&ST.dc.d===today())?'Bajarildi: '+ST.dc.sc+'/'+ST.dc.tot+' ✓':'10 savol · hamma uchun bir xil',dcStart);
- var q=sqToday();card('🗣️ Kunlik Speaking savol',q.topic+(ST.sqd===today()?' · bajarildi ✓':''),sqOpen)}
+ var q=sqToday();card('🗣️ Kunlik Speaking savol',q.topic+(ST.sqd===today()?' · bajarildi ✓':''),function(){sqOpen()})}
 /* theme */
 function dark(){var d=document.documentElement.getAttribute('data-theme');if(d)return d==='dark';return window.matchMedia('(prefers-color-scheme: dark)').matches}
 function apply(t){document.documentElement.setAttribute('data-theme',t);$('nm').textContent=t==='dark'?'Light mode':'Dark mode'}
