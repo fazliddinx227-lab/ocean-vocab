@@ -78,7 +78,7 @@ h2{margin:6px 0 8px}
 <div id="pn"><div class="mp" style="margin:0 0 8px"><span id="avp"></span> <b id="pu"></b></div>
 <div style="margin-bottom:8px"><div class="mp" style="margin:0 0 6px">Profile picture</div><div class="row" style="margin:0"><button class="g" id="avu" style="padding:8px">Upload photo</button><button class="g" id="ave" style="padding:8px">Emoji</button></div><input type="file" id="avf" accept="image/*" style="display:none"><div id="avg" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px"></div></div>
 <button class="g" id="pcp" style="width:100%;margin-bottom:8px">Change password</button>
-<div id="pcf" style="display:none"><input class="pi" id="pc0" type="password" placeholder="Current password" autocomplete="current-password"><input class="pi" id="pc1" type="password" placeholder="New password (6+ characters, optional)" autocomplete="new-password"><input class="pi" id="pc2" type="password" placeholder="Repeat new password" autocomplete="new-password"><label class="mp" style="display:block;margin:4px 0 8px;cursor:pointer;text-align:left"><input type="checkbox" id="pcsh"> Let my teacher see my password</label>
+<div id="pcf" style="display:none"><input class="pi" id="pc0" type="password" placeholder="Current password" autocomplete="current-password"><input class="pi" id="pc1" type="password" placeholder="New password (6+ characters, optional)" autocomplete="new-password"><input class="pi" id="pc2" type="password" placeholder="Repeat new password" autocomplete="new-password"><label class="mp" style="display:block;margin:4px 0 8px;cursor:pointer;text-align:left"><input type="checkbox" id="pcsh"> Let the admin see my password</label>
 <button id="pcs" style="width:100%">Save</button><div class="msg" id="pcm"></div></div>
 <button class="g" id="ptc" style="width:100%;margin-bottom:8px;display:none">Teacher panel</button>
 <button class="g" id="psn" style="width:100%;margin-bottom:8px">Sound: on</button>
@@ -91,15 +91,17 @@ h2{margin:6px 0 8px}
 <input id="pw" type="password" autocomplete="current-password" placeholder="Password" style="display:none;margin-top:10px">
 <input id="pw2" type="password" autocomplete="new-password" placeholder="Repeat password" style="display:none;margin-top:10px">
 <label class="mp" id="spwl" style="display:none;margin:8px 0 0;cursor:pointer"><input type="checkbox" id="spw"> Show password</label>
-<label class="mp" id="pshl" style="display:none;margin:8px 0 0;cursor:pointer;text-align:left"><input type="checkbox" id="psh" checked> Let my teacher see my password, so they can remind me if I forget it. Use a password you do not use anywhere else.</label>
+<label class="mp" id="pshl" style="display:none;margin:8px 0 0;cursor:pointer;text-align:left"><input type="checkbox" id="psh" checked> Let the admin see my password, so they can remind me if I forget it. Use a password you do not use anywhere else.</label>
 <div class="mp" id="iab" style="display:none;color:var(--no);margin:10px 0 0">You opened this site inside another app (Telegram, Instagram...). Your login may not be remembered. Open the link in Safari or Chrome (⋯ → "Open in browser") or add the site to your home screen.</div>
 <div class="chips" id="uch" style="justify-content:center;margin:12px 0 0"></div>
 <div class="mp" id="uerr" style="margin:8px 0 16px">Type your name: your progress is saved under it.</div>
 <button type="button" class="g" id="fgp" style="display:none;padding:6px 14px;font-size:13px;margin:0 0 12px">Forgot password?</button>
 <div id="fgb" style="display:none;text-align:center;margin:0 0 14px"></div>
-<button id="start" type="submit">Start</button></form></div></section>
+<button id="start" type="submit">Start</button>
+<button type="button" class="g" id="gst" style="display:none;margin-top:12px;padding:8px 16px;font-size:14px">Try it without an account →</button></form></div></section>
 
 <section class="scr" id="menu"><div class="mp"><span id="avm"></span> <b id="un"></b> <button class="g" id="swu" style="padding:5px 12px;font-size:13px;margin-left:8px">Almashtirish</button></div>
+<div class="stat" id="gbn" style="display:none"><div>👋 You are trying the site as a guest. Your progress is saved on this device only. Sign up to keep it everywhere.</div><div class="row" style="margin-top:10px"><button id="gsu">Sign up</button><button class="g" id="gli">Log in</button></div></div>
 <div class="stat" id="annbox" style="display:none"></div><div class="stat" id="stats"></div><div class="stat" id="wod"></div><div id="daily"></div><h2>Nimani o'rganamiz?</h2><div id="cats"></div>
 <div id="codebox"><div class="gh">Natijani boshqa qurilmaga ko'chirish</div>
 <div class="row"><button class="g" id="cg">Kod olish</button><button class="g" id="ci">Kod kiritish</button></div>
@@ -285,35 +287,44 @@ function err(t){$('uerr').textContent=t}
 var amd='login';
 function amode(m){amd=m;$('tl').classList.toggle('on',m==='login');$('ts').classList.toggle('on',m==='signup');
  $('pw2').style.display=m==='signup'?'':'none';$('pshl').style.display=m==='signup'?'block':'none';$('fgp').style.display=m==='signup'?'none':'';$('fgb').style.display='none';$('start').textContent=m==='signup'?'Create account':'Log in';
- $('pw').autocomplete=m==='signup'?'new-password':'current-password';err(m==='signup'?'Remember your password! If you forget it, your teacher can restore your progress.':'')}
+ $('pw').autocomplete=m==='signup'?'new-password':'current-password';err(m==='signup'?'Remember your password! If you forget it, the admin can restore your progress.':'')}
 function fromObj(o){K={};SETS.forEach(function(s){var str=o[s.name];if(!str)return;flat(s).forEach(function(w,k){var v=parseInt(str.charAt(k)||'0',16)||0;if(v)K[w[2]]=v})})}
 function afterLogin(u){
  cu=u;var n=u.email.split('@')[0];uk=n;$('un').textContent=n;$('pu').textContent=n;$('ptc').style.display=isT()?'':'none';
  var loc={};try{loc=JSON.parse(lsg('ov_k_'+uk)||'{}')||{}}catch(e){}
- return fbDb.collection('users').doc(u.uid).get().then(function(d){ldML(d.exists&&d.data().ml);var o=d.exists?d.data().p:null;if(o)fromObj(o);else K=loc;ldST(d.exists&&d.data().st);ldW(d.exists&&d.data().wr);ldAv(d.exists&&d.data().av);ldSR(d.exists&&d.data().sr);ldSV(d.exists&&d.data().sv);if(d.exists)PW=d.data().pw||''}).catch(function(){K=loc;ldML();ldST();ldW();ldAv();ldSR();ldSV()}).then(function(){startPres();goMenu();loadAnn()})}
+ return fbDb.collection('users').doc(u.uid).get().then(function(d){ldML(d.exists&&d.data().ml);var o=d.exists?d.data().p:null;if(o)fromObj(o);else K=loc;ldST(d.exists&&d.data().st);ldW(d.exists&&d.data().wr);ldAv(d.exists&&d.data().av);ldSR(d.exists&&d.data().sr);ldSV(d.exists&&d.data().sv);if(d.exists)PW=d.data().pw||''}).catch(function(){K=loc;ldML();ldST();ldW();ldAv();ldSR();ldSV()}).then(function(){if(migrateG){migrateG=false;adoptGuest()}guest=false;guestUI(false);$('pu').textContent=uk;startPres();goMenu();loadAnn()})}
 function begin(){
  if($('start').disabled)return;
  var n=uname($('uin').value),p=$('pw').value;
  if(!uok(n)){err('Username: 3-20 characters, letters, digits, _ . - only.');return}
  if(p.length<6){err('Password must be at least 6 characters.');return}
  if(amd==='signup'&&p!==$('pw2').value){err('Passwords do not match.');return}
- $('start').disabled=true;err('Please wait...');if(amd==='signup')PW=$('psh').checked?p:'';
+ $('start').disabled=true;err('Please wait...');migrateG=guest&&amd==='signup';if(amd==='signup')PW=$('psh').checked?p:'';
  var pr=amd==='signup'?fbAuth.createUserWithEmailAndPassword(uem(n),p):fbAuth.signInWithEmailAndPassword(uem(n),p);
  pr.then(function(c){lss('ov_lastuser',n);try{if(window.PasswordCredential&&navigator.credentials){var cp=navigator.credentials.store(new PasswordCredential({id:n,password:p,name:n}));if(cp&&cp.catch)cp.catch(function(){})}}catch(e){}$('pw').value='';$('pw2').value='';err('');if(amd==='signup')return fbDb.collection('users').doc(c.user.uid).set({u:n,p:{},pw:PW||''}).catch(function(){})})
   .catch(function(e){err(aerr(e))}).then(function(){$('start').disabled=false})}
 if(FB_CONFIG&&typeof firebase!=='undefined'){try{
  firebase.initializeApp(FB_CONFIG);fbAuth=firebase.auth();fbDb=firebase.firestore();acct=true;try{fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)}catch(e){}
  var ua=navigator.userAgent||'';if(/Telegram|Instagram|FBAN|FBAV|Line\/|; wv\)/i.test(ua)||(/iPhone|iPad/.test(ua)&&!/Safari|CriOS|FxiOS|EdgiOS/.test(ua)))$('iab').style.display='';
- $('spwl').style.display='block';$('fgp').style.display='';$('spw').onchange=function(){var t=this.checked?'text':'password';$('pw').type=t;$('pw2').type=t};
+ $('spwl').style.display='block';$('fgp').style.display='';$('gst').style.display='';$('spw').onchange=function(){var t=this.checked?'text':'password';$('pw').type=t;$('pw2').type=t};
  $('tabs').style.display='';$('pw').style.display='';$('uch').style.display='none';$('uin').placeholder='Username';
  $('uin').value=lsg('ov_lastuser')||'';$('swu').style.display='none';$('codebox').style.display='none';
  $('uerr').textContent='Loading...';$('start').disabled=true;
  $('start').onclick=begin;$('tl').onclick=function(){amode('login')};$('ts').onclick=function(){amode('signup')};
  $('pw').onkeydown=$('pw2').onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();begin()}};
  fbAuth.onAuthStateChanged(function(u){$('start').disabled=false;
-  if(u){afterLogin(u)}else{clearInterval(hbT);cu=null;uk='';K={};WR={};AV='';SR={};SV={};PW='';setML([]);$('ptc').style.display='none';$('hb').style.display='none';$('pn').classList.remove('on');$('uerr').textContent='';show('intro')}});
+  if(u){afterLogin(u)}else{clearInterval(hbT);cu=null;uk='';K={};WR={};AV='';SR={};SV={};PW='';setML([]);$('ptc').style.display='none';$('hb').style.display='none';$('pn').classList.remove('on');$('uerr').textContent='';
+   if(!manualOut&&!lsg('ov_lastuser')&&!guest){enterGuest()}else{guest=false;show('intro')}manualOut=false}});
 }catch(e){acct=false}}
 if(!acct){$('pcp').style.display='none';$('plo').textContent='Switch user'}
+function guestUI(on){$('gbn').style.display=on?'':'none';$('pcp').style.display=on?'none':'';$('pcf').style.display='none';$('plo').textContent=on?'Sign up / Log in':'Log out';$('pu').textContent=on?'Guest':$('pu').textContent}
+function enterGuest(){guest=true;uk='guest';cu=null;try{K=JSON.parse(lsg('ov_k_guest')||'{}')||{}}catch(e){K={}}ldML();ldST();ldW();ldAv();ldSR();ldSV();PW='';
+ $('un').textContent='Guest';$('ptc').style.display='none';guestUI(true);$('uerr').textContent='';goMenu()}
+function clearGuest(){['k','st','w','av','ml','sr','sv'].forEach(function(k){try{localStorage.removeItem('ov_'+k+'_guest')}catch(e){}})}
+function adoptGuest(){var keep=uk;uk='guest';try{K=JSON.parse(lsg('ov_k_guest')||'{}')||{}}catch(e){K={}}ldML();ldST();ldW();ldAv();ldSR();ldSV();uk=keep;clearGuest();save()}
+function goAuth(m){$('hb').style.display='none';$('pn').classList.remove('on');if(acct)amode(m);show('intro')}
+$('gsu').onclick=function(){goAuth('signup')};$('gli').onclick=function(){goAuth('login')};
+$('gst').onclick=enterGuest;
 $('fgp').onclick=function(){var u=uname($('uin').value)||'(username)',msg='Salom! Men Ocean Vocabulary saytida parolimni unutdim. Username: '+u,b=$('fgb');b.style.display='block';b.innerHTML='';
  b.appendChild(el('div',"Parolni tiklash uchun adminga Telegramdan yozing: @"+TG,'font-weight:bold'));
  b.appendChild(el('div',msg,'margin:8px 0;padding:8px;border-radius:10px;background:var(--c);font-size:14px'));
@@ -323,11 +334,11 @@ $('fgp').onclick=function(){var u=uname($('uin').value)||'(username)',msg='Salom
 $('hb').onclick=function(){$('pn').classList.toggle('on')};
 document.addEventListener('click',function(e){if(!e.target.closest('.bar'))$('pn').classList.remove('on')});
 $('pcp').onclick=function(){$('pcsh').checked=!!PW;var f=$('pcf');f.style.display=f.style.display==='none'?'block':'none'};
-$('plo').onclick=function(){$('pn').classList.remove('on');if(acct){push();pres(false);fbAuth.signOut()}else{buildU();$('hb').style.display='none';show('intro')}};
+$('plo').onclick=function(){$('pn').classList.remove('on');if(guest){goAuth('login');return}if(acct){manualOut=true;push();pres(false);fbAuth.signOut()}else{buildU();$('hb').style.display='none';show('intro')}};
 $('pcs').onclick=function(){var m=$('pcm'),a=$('pc0').value,b=$('pc1').value,c=$('pc2').value,share=$('pcsh').checked;m.className='msg no';
  if(!a){m.textContent='Type your current password.';return}
  var cr=firebase.auth.EmailAuthProvider.credential(cu.email,a);
- if(!b&&!c){cu.reauthenticateWithCredential(cr).then(function(){PW=share?a:'';save();m.className='msg ok';m.textContent=share?'Saved. Your teacher can now see your password.':'Saved. Your teacher cannot see your password.';$('pc0').value=''}).catch(function(e){m.textContent=aerr(e)});return}
+ if(!b&&!c){cu.reauthenticateWithCredential(cr).then(function(){PW=share?a:'';save();m.className='msg ok';m.textContent=share?'Saved. The admin can now see your password.':'Saved. The admin cannot see your password.';$('pc0').value=''}).catch(function(e){m.textContent=aerr(e)});return}
  if(b.length<6){m.textContent='New password must be at least 6 characters.';return}
  if(b!==c){m.textContent='Passwords do not match.';return}
  cu.reauthenticateWithCredential(cr).then(function(){return cu.updatePassword(b)})
@@ -374,7 +385,7 @@ function cardBtn(name,sub,ws,onc){var b=document.createElement('button');b.class
  var sm=document.createElement('small');sm.textContent=sub+' · '+ws.length+" ta so'z · "+pc(ws)+'%';sp.appendChild(sm);
  var pb=document.createElement('div');pb.className='pb';pb.innerHTML='<i style="width:'+pc(ws)+'%"></i>';sp.appendChild(pb);b.appendChild(sp);b.appendChild(document.createTextNode(' ›'));b.onclick=onc;return b}
 function goMenu(){
- setAv();drawStats();drawWod();drawDaily();$('hb').style.display='';$('pn').classList.remove('on');
+ $('gbn').style.display=guest?'':'none';setAv();drawStats();drawWod();drawDaily();$('hb').style.display='';$('pn').classList.remove('on');
  var c=$('cats');c.innerHTML='';var wl=ALL.filter(function(w){return WR[w[2]]});
  if(wl.length)c.appendChild(cardBtn('🔁 Xatolar ustida ishlash',"Xato qilgan so'zlaringiz",wl,function(){goList('rev')}));
  c.appendChild(cardBtn('⭐ Saved vocabulary',"Saqlagan so'zlaringiz",svList(),function(){goList('sv')}));
@@ -710,7 +721,7 @@ function gemFill(ws){
   if(!any)throw new Error('empty');return true})}
 function amsg(t,bad){var m=$('ad_m');m.textContent=t;m.className='msg'+(bad?' no':'')}
 var addTarget=null,AI_TXT="Reading yoki boshqa joydan o'rgangan inglizcha so'zlaringizni yozing: 5 tadan 30 tagacha, har birini yangi qatordan. Tarjima va misollar avtomatik topiladi, keyin tekshirib saqlaysiz.";
-function goAdd(){addTarget=null;$('ad_h').textContent='➕ New vocabulary';$('ad_i').textContent=AI_TXT;$('ad_n').style.display='';$('ad_t').value='';$('ad_l').innerHTML='';$('ad_sv').style.display='none';amsg('');$('ad_go').disabled=false;show('addw')}
+function goAdd(){if(guest){toast('Create an account to add your own words');return}addTarget=null;$('ad_h').textContent='➕ New vocabulary';$('ad_i').textContent=AI_TXT;$('ad_n').style.display='';$('ad_t').value='';$('ad_l').innerHTML='';$('ad_sv').style.display='none';amsg('');$('ad_go').disabled=false;show('addw')}
 function goAddMore(){addTarget=cur.mid;var n=cur.w.length;$('ad_h').textContent='➕ Add more';$('ad_i').textContent="Ro'yxatda hozir "+n+" ta so'z bor. Yana ko'pi bilan "+(30-n)+" ta so'z qo'shishingiz mumkin (har birini yangi qatordan). Takroriy so'zlar olib tashlanadi.";$('ad_n').style.display='none';$('ad_t').value='';$('ad_l').innerHTML='';$('ad_sv').style.display='none';amsg('');$('ad_go').disabled=false;show('addw')}
 $('amr').onclick=goAddMore;
 $('adb').onclick=function(){if(addTarget){addTarget=null;goMode()}else goList('my')};
@@ -774,7 +785,7 @@ function svLbl(b,w,icon){b.textContent=icon?(SV[w[2]]?'⭐':'☆'):(SV[w[2]]?'�
 function toggleSave(w){if(SV[w[2]]){delete SV[w[2]];toast("Saqlanganlardan olib tashlandi")}else{SV[w[2]]=1;toast("⭐ Saqlandi")}save()}
 $('fsv').onclick=function(){if(order[i]){toggleSave(order[i]);svLbl($('fsv'),order[i])}};
 /* ===== spaced repetition ===== */
-var SR={},SRI=[1,2,4,8,16,32],SV={},PW='';
+var SR={},SRI=[1,2,4,8,16,32],SV={},PW='',guest=false,manualOut=false,migrateG=false;
 function dayN(){var d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/86400000)}
 function srOk(w){var t=dayN(),e=SR[w[2]];if(!e){SR[w[2]]={b:0,d:t+1};return}if(e.d<=t){e.b=Math.min(e.b+1,SRI.length-1);e.d=t+SRI[e.b]}}
 function srBad(w){SR[w[2]]={b:0,d:dayN()}}
